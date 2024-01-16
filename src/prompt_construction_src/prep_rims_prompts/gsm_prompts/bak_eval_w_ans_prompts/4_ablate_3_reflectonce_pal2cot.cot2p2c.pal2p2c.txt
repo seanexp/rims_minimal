@@ -1,0 +1,108 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: To solve this problem, let's break it down:
+
+1. Determine how many apples Bella eats in a week.
+2. Calculate a third of the apples that Grace picks based on what Bella eats.
+3. Find out how many apples Grace picks in total over 6 weeks.
+4. Subtract the apples consumed by Bella from Grace's total to see how many are left.
+
+Step 1: Calculate the apples Bella eats in a week.
+Bella eats 6 apples a day, so in one week (7 days), she eats:
+6 apples/day * 7 days/week = 42 apples/week
+
+Step 2: Find a third of the apples Grace picks each week.
+Since Bella eats a third of the apples picked by Grace, we need to find the total number of apples Grace picks that is three times the amount Bella eats.
+1/3 of the apples Grace picks = 42 apples/week (Bella's consumption)
+Therefore, the total Grace picks in a week = 42 apples/week * 3 = 126 apples/week
+
+Step 3: Calculate how many apples Grace picks in 6 weeks.
+Grace picks 126 apples in one week, so in 6 weeks she picks:
+126 apples/week * 6 weeks = 756 apples
+
+Step 4: Subtract the apples consumed by Bella from Grace's total.
+Over the course of 6 weeks, Bella eats:
+42 apples/week * 6 weeks = 252 apples
+
+Therefore, the total number of apples Grace will have after Bella consumes her third over 6 weeks is:
+756 apples - 252 apples = 504 apples
+
+So the answer is, Grace will have 504 apples left after 6 weeks.
+`Answer 1`: 504.0
+`Evaluation`: Correct
+
+
+
+`Question`: Four small panda bears and five bigger panda bears eat 25 pounds and 40 pounds of fresh bamboo sprouts every day, respectively. How many pounds of bamboo do the 9 pandas eat in a week?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define a variable to represent the daily amount of bamboo eaten by small panda bears, let's call it `small_panda_bamboo_day` and set its value to 25 pounds.
+2. Define another variable for the daily amount of bamboo eaten by bigger panda bears, name it `big_panda_bamboo_day` and set its value to 40 pounds.
+3. Calculate the daily bamboo consumption for all small panda bears by multiplying `small_panda_bamboo_day` by the number of small panda bears (4). Let's call this result `total_small_panda_bamboo_day`.
+4. Calculate the daily bamboo consumption for all bigger panda bears by multiplying `big_panda_bamboo_day` by the number of bigger panda bears (5). Let's call this result `total_big_panda_bamboo_day`.
+5. Add `total_small_panda_bamboo_day` and `total_big_panda_bamboo_day` to find the total amount of bamboo eaten by all nine pandas in one day. Store this in a new variable called `total_bamboo_day`.
+6. Since the question asks for the total amount of bamboo eaten in a week, multiply `total_bamboo_day` by 7 (the number of days in a week). Store this in a new variable called `total_bamboo_week`.
+7. Return the value of `total_bamboo_week`, which represents the total pounds of bamboo the nine pandas eat in a week.
+def solution():
+    small_panda_bamboo_day = 25
+    big_panda_bamboo_day = 40
+    number_of_small_pandas = 4
+    number_of_big_pandas = 5
+
+    total_small_panda_bamboo_day = small_panda_bamboo_day * number_of_small_pandas
+    total_big_panda_bamboo_day = big_panda_bamboo_day * number_of_big_pandas
+    
+    total_bamboo_day = total_small_panda_bamboo_day + total_big_panda_bamboo_day
+
+    total_bamboo_week = total_bamboo_day * 7
+    
+    return total_bamboo_week
+
+`Answer 1`: 2100.0
+`Evaluation`: Correct
+
+
+
+`Question`: Jerry is making cherry syrup. He needs 500 cherries per quart of syrup. It takes him 2 hours to pick 300 cherries and 3 hours to make the syrup. How long will it take him to make 9 quarts of syrup?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Determine the total number of cherries needed to make 9 quarts of syrup. Multiply the number of cherries needed per quart (500) by the number of quarts (9).
+2. Calculate how many hours Jerry takes to pick the cherries for one quart and then for 9 quarts. He picks 300 cherries in 2 hours, so determine the number of hours needed per cherry, which is 2/300 hours per cherry. Then multiply this by the total number of cherries needed for 9 quarts.
+3. Add the time taken to make the syrup, which is 3 hours for one batch of syrup. Since it's not mentioned that making syrup time multiplies when quantity increases, we'll assume that the time remains constant regardless of the number of quarts.
+4. Add the total time to pick cherries for 9 quarts to the time taken to make the syrup to get the total time to make 9 quarts of cherry syrup.
+5. Return the result as the total time required for the whole process.
+def solution():
+    cherries_per_quart = 500
+    quarts_to_make = 9
+    picking_time = 2  # hours for 300 cherries
+    making_time = 3  # hours for syrup, regardless of quantity
+
+    # Total cherries needed
+    total_cherries_needed = cherries_per_quart * quarts_to_make
+    
+    # Time to pick cherries for one quart
+    time_per_cherry = picking_time / 300
+    total_picking_time = time_per_cherry * total_cherries_needed
+
+    # Total time: picking + making
+    total_time = total_picking_time + making_time  # Making time is the same regardless of quantity
+    
+    return total_time
+
+`Answer 1`: 33.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

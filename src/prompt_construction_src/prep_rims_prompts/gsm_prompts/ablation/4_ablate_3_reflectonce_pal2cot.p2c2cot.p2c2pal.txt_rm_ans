@@ -1,0 +1,73 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: Answer:
+Bonnie bought 8 apples.
+Samuel bought 20 more apples than Bonnie, which means Samuel bought 8 + 20 = 28 apples.
+
+Now, Samuel ate half of the 28 apples he had. Half of 28 is 28 / 2 = 14 apples eaten.
+
+So after eating, Samuel has 28 - 14 = 14 apples left.
+
+Next, he used 1/7 of the original 28 apples to make apple pie. To find 1/7 of 28, we do 28 / 7 = 4 apples used for the pie.
+
+So after using 4 apples for the pie, Samuel has 14 - 4 = 10 apples left.
+
+Therefore, Samuel has 10 apples left.
+`Answer 1`: 10.0
+`Evaluation`: Correct
+
+
+
+`Question`: Barbie enjoys buying jewelry. One day, she bought 12 pairs of earrings, and gave half of them to Alissa, making Alissa's total number of collections to be triple the number of earrings she was given. How many earrings does Alissa have now?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: Answer:
+Barbie bought 12 pairs of earrings.
+And she gave half of them to Alissa, which means she gave Alissa 12 / 2 = 6 pairs of earrings.
+
+If Alissa's total number of earrings became triple the number she was given after receiving the earrings from Barbie, we multiply the number she was given by 3 to find Alissa's new total.
+
+So, Alissa's new total number of earrings is 6 pairs * 3 = 18 pairs.
+
+Since each pair consists of 2 earrings, to find the total number of individual earrings, we multiply the number of pairs by 2.
+
+Therefore, Alissa has 18 pairs * 2 = 36 individual earrings.
+
+So the answer is 36 individual earrings.
+`Answer 1`: 36.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bill started reading a book on the first day of April. He read 8 pages every day and by the 12th of April, he had covered two-thirds of the book. How many pages does the book have?
+`Method`: Program-aided Language Modeling (pal)
+`Attempt 1`: 
+def solution():
+    pages_per_day = 8
+    days_read = 12
+    fraction_of_book_read = 2/3
+    pages_read_by_april_12 = pages_per_day * days_read
+    total_pages = pages_read_by_april_12 / fraction_of_book_read
+    return int(total_pages)
+
+# Let's call the function and print the result
+print(solution())
+
+`Answer 1`: 144.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

@@ -1,0 +1,128 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
+`Method`: Program-aided Language Modeling (pal)
+`Attempt 1`: 
+def solution():
+    bonnie_apples = 8
+    samuel_apples_more = 20
+    samuel_apples_bought = bonnie_apples + samuel_apples_more
+    samuel_apples_after_eating_half = samuel_apples_bought / 2
+    apples_for_pie = samuel_apples_after_eating_half / 7
+    samuel_apples_left = samuel_apples_after_eating_half - apples_for_pie
+    result = samuel_apples_left
+    return result
+
+`Answer 1`: 12.0
+`Evaluation`: Wrong 
+`Mistakes`: The error is in the calculation of apples used for the pie. After eating half of his apples, Samuel does not use 1/7 of the remaining half; he uses 1/7 of the original amount of apples he bought to make the pie.
+`Hint for a better Method choice`: A Chain-of-Thought method might have helped avoid the mistake in the problem comprehension related to fractions of the different amounts of apples.
+`Workaround Method`: Chain-of-Thought (cot)
+`Attempt 2`: Answer:
+Bonnie bought 8 apples.
+Samuel bought 20 more apples than Bonnie, which means Samuel bought 8 + 20 = 28 apples.
+
+Now, Samuel ate half of the 28 apples he had. Half of 28 is 28 / 2 = 14 apples eaten.
+
+So after eating, Samuel has 28 - 14 = 14 apples left.
+
+Next, he used 1/7 of the original 28 apples to make apple pie. To find 1/7 of 28, we do 28 / 7 = 4 apples used for the pie.
+
+So after using 4 apples for the pie, Samuel has 14 - 4 = 10 apples left.
+
+Therefore, Samuel has 10 apples left.
+`Answer 2`: 10.0
+`Evaluation`: Correct
+
+
+
+`Question`: Barbie enjoys buying jewelry. One day, she bought 12 pairs of earrings, and gave half of them to Alissa, making Alissa's total number of collections to be triple the number of earrings she was given. How many earrings does Alissa have now?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Determine the number of earrings Barbie bought initially: `initial_earrings = 12`.
+2. Calculate the number of earrings Barbie gave to Alissa: `earrings_given = initial_earrings / 2`.
+3. Understand that after giving the earrings, Alissa's new total is three times as much as the number she was given.
+4. Set up the equation to find the total number of earrings Alissa has now: `total_earrings_alissa = 3 * earrings_given`.
+5. Solve the equation to find out Alissa's current total number of earrings.
+6. Return the number of earrings Alissa has now (`total_earrings_alissa`).
+def solution():
+    initial_earrings = 12
+    earrings_given = initial_earrings / 2
+    total_earrings_alissa = 3 * earrings_given
+    
+    return int(total_earrings_alissa)
+`Answer 1`: 18.0
+`Evaluation`: Wrong 
+`Mistakes`: The initial attempt fails to account for the fact that earrings come in pairs, which implies each pair consists of two earrings. The calculation should consider this aspect in the total count. The attempt computes the number given to Alissa as half of the number of pairs, which is not incorrect, but fails to multiply by two for the actual number of earrings.
+`Hint for a better Method choice`: Utilizing Chain of Thought could help clarify the relationship between pairs of earrings and individual earrings, emphasizing the need to count individual earrings in each pair.
+`Workaround Method`: Chain-of-Thought (cot)
+`Attempt 2`: Answer:
+Barbie bought 12 pairs of earrings.
+And she gave half of them to Alissa, which means she gave Alissa 12 / 2 = 6 pairs of earrings.
+
+If Alissa's total number of earrings became triple the number she was given after receiving the earrings from Barbie, we multiply the number she was given by 3 to find Alissa's new total.
+
+So, Alissa's new total number of earrings is 6 pairs * 3 = 18 pairs.
+
+Since each pair consists of 2 earrings, to find the total number of individual earrings, we multiply the number of pairs by 2.
+
+Therefore, Alissa has 18 pairs * 2 = 36 individual earrings.
+
+So the answer is 36 individual earrings.
+`Answer 2`: 36.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bill started reading a book on the first day of April. He read 8 pages every day and by the 12th of April, he had covered two-thirds of the book. How many pages does the book have?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define the variable `pages_per_day` to represent the number of pages Bill reads each day.
+2. Set `pages_per_day` to 8 since Bill reads 8 pages every day.
+3. Calculate the total number of days Bill has been reading by the 12th of April, given he started on the 1st. Let's call this variable `total_days` and set it as `12 - 1` (since the first day is included).
+4. Multiply `pages_per_day` by `total_days` to find the total number of pages Bill has read by the 12th of April. Let's call this result `pages_read`.
+5. Since `pages_read` is two-thirds of the book, represent the total number of pages of the book as `total_pages`.
+6. Given that two-thirds of the book is `pages_read`, you can express this as an equation `(2/3) * total_pages = pages_read`.
+7. Solve the equation for `total_pages` to find the number of pages the book has.
+8. Return the total number of pages of the book as the final step.
+def solution():
+    pages_per_day = 8
+    total_days = 12 - 1  # From 1st to 12th of April, excluding the start day
+    pages_read = pages_per_day * total_days
+
+    # Since pages_read is two-thirds of the book
+    total_pages = (pages_read * 3) // 2
+
+    return total_pages
+`Answer 1`: 132.0
+`Evaluation`: Wrong 
+`Mistakes`: The calculation for `total_pages` in the provided attempt is incorrect because the formula used is `total_pages = (pages_read * 3) // 2` which would actually calculate three halves of `pages_read` instead of the full number of pages in the book. The correct calculation should use the formula `total_pages = pages_read / (2/3)` or `total_pages = pages_read * (3/2)` to find the total number of pages.
+`Hint for a better Method choice`: Using Chain of Thought could help conceptualize the proportional relationship of the pages read to the total book's length, avoiding algebraic manipulation errors.
+`Workaround Method`: Program-aided Language Modeling (pal)
+`Attempt 2`: 
+def solution():
+    pages_per_day = 8
+    days_read = 12
+    fraction_of_book_read = 2/3
+    pages_read_by_april_12 = pages_per_day * days_read
+    total_pages = pages_read_by_april_12 / fraction_of_book_read
+    return int(total_pages)
+
+# Let's call the function and print the result
+print(solution())
+
+`Answer 2`: 144.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

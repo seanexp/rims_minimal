@@ -1,0 +1,50 @@
+{
+    "4_ablate_3_reflectonce_cot2pal.cot2p2c.pal2p2c.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_p2c2pal.cot2p2c.cot2pal.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_cot2p2c.pal2cot.pal2p2c.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_pal2cot.cot2p2c.pal2p2c.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_pal2cot.p2c2cot.p2c2pal.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_p2c2cot.pal2p2c.pal2cot.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_pal2p2c.cot2p2c.cot2pal.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    },
+    "4_ablate_3_reflectonce_p2c2cot.cot2pal.pal2p2c.txt_rm_ans": {
+        "cot": [],
+        "pal": [],
+        "p2c": [],
+        "extend": []
+    }
+}

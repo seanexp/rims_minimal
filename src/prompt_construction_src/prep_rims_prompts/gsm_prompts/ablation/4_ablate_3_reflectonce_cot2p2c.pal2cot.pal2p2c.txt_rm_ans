@@ -1,0 +1,79 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Nedy can eat 8 packs of crackers from Monday to Thursday. If Nedy ate twice the amount on Friday, how many crackers did Nedy eat in all?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Start with a variable `crackers_per_day` and set its value to 8 since Nedy can eat 8 packs of crackers each day.
+2. Calculate the total number of crackers eaten from Monday to Thursday by multiplying `crackers_per_day` by 4 (the number of days from Monday to Thursday). Store this calculation in a new variable `crackers_mon_to_thu`.
+3. Calculate the number of crackers eaten on Friday by multiplying `crackers_per_day` by 2 since it's twice the daily amount. Store this in another variable `crackers_friday`.
+4. Add `crackers_mon_to_thu` and `crackers_friday` together to get the total number of crackers eaten in the whole week. Store this in a variable `total_crackers`.
+5. Return the value of `total_crackers` as the answer.
+def solution():
+    crackers_per_day = 8
+    crackers_mon_to_thu = crackers_per_day * 4
+    crackers_friday = crackers_per_day * 2
+    total_crackers = crackers_mon_to_thu + crackers_friday
+    
+    return total_crackers
+
+`Answer 1`: 48.0
+`Evaluation`: Correct
+
+
+
+`Question`: Two white socks cost 25 cents more than a single brown sock. If two white socks cost 45 cents, how much would you pay for 15 brown socks?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: Answer:
+Two white socks cost 45 cents.
+One brown sock costs 25 cents less than two white socks.
+Therefore, the cost of one brown sock is 45 cents - 25 cents = 20 cents.
+
+If one brown sock costs 20 cents, then 15 brown socks would cost:
+15 * 20 cents = 300 cents.
+
+Since 100 cents is equal to 1 dollar:
+300 cents is equal to 300 / 100 = $3.
+
+So, you would pay $3 for 15 brown socks.
+`Answer 1`: 3.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define a variable called `bonnie_apples` to represent the number of apples bought by Bonnie and assign it the value 8.
+2. Define a variable called `samuel_extra_apples` to represent the additional number of apples bought by Samuel compared to Bonnie and assign it the value 20.
+3. Calculate the total number of apples bought by Samuel by adding `bonnie_apples` and `samuel_extra_apples`. Let's call this `samuel_apples`.
+4. Define a variable `samuel_ate` to represent the number of apples Samuel ate, which is half of his apples, so `samuel_ate = samuel_apples / 2`.
+5. Define another variable `samuel_pie` to represent the number of apples used to make the pie, which is 1/7th of his apples, so `samuel_pie = samuel_apples / 7`.
+6. Calculate the number of apples Samuel has left by subtracting `samuel_ate` and `samuel_pie` from his total number of apples (`samuel_apples - samuel_ate - samuel_pie`).
+7. Return the final number of apples Samuel has.
+def solution():
+    bonnie_apples = 8
+    samuel_extra_apples = 20
+
+    samuel_apples = bonnie_apples + samuel_extra_apples
+    samuel_ate = samuel_apples / 2
+    samuel_pie = samuel_apples / 7
+
+    samuel_left = samuel_apples - samuel_ate - samuel_pie
+
+    return samuel_left
+
+`Answer 1`: 10.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

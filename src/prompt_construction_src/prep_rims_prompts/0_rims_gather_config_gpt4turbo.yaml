@@ -1,0 +1,29 @@
+#config for
+# rim_train_failure_gather.py
+# rim_train_reflect.py 
+
+dbg: false # dbg option
+start_from_idx: 34 # 
+
+verbal_T: 1. # temperature querying LLM for verbal outputs (e.g. cot, plan generation, reflection, etc.)
+code_T: 1. # temperature querying LLM for code outputs (e.g. plan2code or pal)
+
+max_retry: 10 # max. resampling of the output for a reflected output
+
+seed: 777 # seed for llmquery
+n_llmquery: 3 # number of choices to be checked for failure 
+n_candids: 30 # number of candidate questions to reflect (failed first)
+
+
+
+rims_prompt_f: '' # prompt for reflection and hint and so on. can change
+    # reflect_prompt_f 
+    # hint_prompt_f
+    # eval_prompt_f # possible fissions of prompts... hope this does not happen...
+backbone: gpt4turbo # chatgpt, gpt4, gpt4turbo
+
+dataset_f: gsm8k_train.jsonl
+num_train_sample: 1000 # interval of sampling from the trainset
+heuristics: wordcount
+
+outdir: rims_train_out/dec27

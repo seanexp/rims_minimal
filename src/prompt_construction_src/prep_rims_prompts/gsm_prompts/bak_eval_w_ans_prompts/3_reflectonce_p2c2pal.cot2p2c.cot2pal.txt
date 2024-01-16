@@ -1,0 +1,168 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define a variable for the number of apples Bella eats per day (e.g., `apples_per_day = 6`).
+2. Determine the number of days in 6 weeks (e.g., `days_in_6_weeks = 6 weeks * 7 days/week`).
+3. Calculate the total number of apples Bella eats in 6 weeks (e.g., `total_apples_eaten = apples_per_day * days_in_6_weeks`).
+4. Since Bella eats a third of the apples Grace picks, set up an equation where 1/3 of the total apples picked by Grace (`total_apples_grace`) equals `total_apples_eaten` (i.e., `total_apples_grace / 3 = total_apples_eaten`).
+5. Solve the equation to find `total_apples_grace`, the total number of apples Grace picks (i.e., `total_apples_grace = total_apples_eaten * 3`).
+6. Return the final value of `total_apples_grace` which is the number of apples Grace will have after 6 weeks.
+def solution():
+    apples_per_day = 6
+    days_in_6_weeks = 6 * 7
+    total_apples_eaten = apples_per_day * days_in_6_weeks
+    total_apples_grace = total_apples_eaten * 3
+    
+    return total_apples_grace
+`Answer 1`: 756.0
+`Evaluation`: Wrong (correct answer: 504.0)
+`Mistakes`: The mistake in the first attempt is the misinterpretation of the final quantity of apples. The first attempt calculates the total number of apples Grace picks, but overlooks the fact that Bella actually consumes some of these apples, so they should not all still be with Grace after 6 weeks. The calculation method did not account for the apples consumed by Bella, hence the error in the answer.
+`Hint for a better Method choice`: The Program-aided Language Modeling (pal) method allows for direct computation and straightforward adjustments to the logic in the code, which can ease the correction of conceptual mistakes.
+`Workaround Method`: Program-aided Language Modeling (pal)
+`Attempt 2`: 
+def solution():
+    # Bella eats 6 apples a day
+    apples_per_day_bella = 6
+
+    # Number of days in a week
+    days_per_week = 7
+
+    # How many apples Bella eats in 1 week
+    apples_per_week_bella = apples_per_day_bella * days_per_week
+
+    # Since Bella eats a third of the apples Grace picks, Grace picks 3 times the amount Bella eats
+    apples_per_week_grace = apples_per_week_bella * 3
+
+    # Calculation for 6 weeks
+    total_apples_6_weeks_grace = apples_per_week_grace * 6
+    total_apples_6_weeks_bella = apples_per_week_bella * 6
+
+    # Subtracting the apples Bella has eaten from Grace's total
+    result = total_apples_6_weeks_grace - total_apples_6_weeks_bella
+    return result
+
+`Answer 2`: 504.0
+`Evaluation`: Correct
+
+
+
+`Question`: Four small panda bears and five bigger panda bears eat 25 pounds and 40 pounds of fresh bamboo sprouts every day, respectively. How many pounds of bamboo do the 9 pandas eat in a week?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: Answer:
+First, we calculate the daily bamboo consumption for both small and bigger panda bears.
+
+The four small panda bears eat 25 pounds of bamboo each day, so the total daily consumption for the small pandas is:
+4 small pandas * 25 pounds/panda = 100 pounds
+
+The five bigger panda bears eat 40 pounds of bamboo each day, so the total daily consumption for the bigger pandas is:
+5 bigger pandas * 40 pounds/panda = 200 pounds
+
+Now, we add together the daily consumption for both small and bigger pandas to get the total daily bamboo consumption for all 9 pandas:
+100 pounds + 200 pounds = 300 pounds per day
+
+Since there are 7 days in one week, we multiply the daily consumption by 7 to get the weekly consumption:
+300 pounds/day * 7 days/week = 2100 pounds per week
+
+So the answer is that the 9 pandas eat 2100 pounds of bamboo in a week.
+`Answer 1`: 9.0
+`Evaluation`: Wrong (correct answer: 2100.0)
+`Mistakes`: The one-liner explanation for what's gone wrong in the attempt is that the final answer was incorrectly listed as 9.0 instead of the correct calculation of 2100 pounds.
+`Hint for a better Method choice`: A programming-aided approach would accurately perform the calculations and reduce the risk of transcription errors. 
+`Workaround Method`: Plan-and-then-Code (p2c)
+`Attempt 2`: 1. Define a variable to represent the daily amount of bamboo eaten by small panda bears, let's call it `small_panda_bamboo_day` and set its value to 25 pounds.
+2. Define another variable for the daily amount of bamboo eaten by bigger panda bears, name it `big_panda_bamboo_day` and set its value to 40 pounds.
+3. Calculate the daily bamboo consumption for all small panda bears by multiplying `small_panda_bamboo_day` by the number of small panda bears (4). Let's call this result `total_small_panda_bamboo_day`.
+4. Calculate the daily bamboo consumption for all bigger panda bears by multiplying `big_panda_bamboo_day` by the number of bigger panda bears (5). Let's call this result `total_big_panda_bamboo_day`.
+5. Add `total_small_panda_bamboo_day` and `total_big_panda_bamboo_day` to find the total amount of bamboo eaten by all nine pandas in one day. Store this in a new variable called `total_bamboo_day`.
+6. Since the question asks for the total amount of bamboo eaten in a week, multiply `total_bamboo_day` by 7 (the number of days in a week). Store this in a new variable called `total_bamboo_week`.
+7. Return the value of `total_bamboo_week`, which represents the total pounds of bamboo the nine pandas eat in a week.
+def solution():
+    small_panda_bamboo_day = 25
+    big_panda_bamboo_day = 40
+    number_of_small_pandas = 4
+    number_of_big_pandas = 5
+
+    total_small_panda_bamboo_day = small_panda_bamboo_day * number_of_small_pandas
+    total_big_panda_bamboo_day = big_panda_bamboo_day * number_of_big_pandas
+    
+    total_bamboo_day = total_small_panda_bamboo_day + total_big_panda_bamboo_day
+
+    total_bamboo_week = total_bamboo_day * 7
+    
+    return total_bamboo_week
+
+`Answer 2`: 2100.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: To solve this problem, we first need to determine the total number of apples Bella eats in a week. Then, we can discern what one-third of that number is (which is the weekly amount of apples that Grace picks), and finally, we can calculate how many apples Grace will have after 6 weeks.
+
+Step 1: Calculate the total number of apples Bella eats in a week.
+Bella eats 6 apples per day. There are 7 days in a week.
+So, in one week, Bella eats 6 apples/day × 7 days/week = 42 apples/week.
+
+Step 2: Determine the number of apples Grace picks in a week.
+Since Bella consumes a third of the apples that Grace picks:
+Let's call the number of apples Grace picks in a week "G."
+If "Bella eats one third," then (1/3) × G = 42 apples.
+
+To find "G," we multiply both sides of the equation by 3:
+G = 42 apples × 3 = 126 apples.
+
+So, Grace picks 126 apples in one week.
+
+Step 3: Calculate how many apples Grace will have after 6 weeks.
+If Grace picks 126 apples each week, then in 6 weeks, Grace will have:
+126 apples/week × 6 weeks = 756 apples.
+
+Therefore, after 6 weeks, Grace will have 756 apples.
+`Answer 1`: 6.0
+`Evaluation`: Wrong (correct answer: 504.0)
+`Mistakes`: The final calculation in Attempt 1 is incorrect. The question asks how many apples Grace will have after Bella eats her share, which means we need to subtract the amount eaten by Bella from the total Grace picks over 6 weeks, but the solution simply multiplies the number of apples Grace would pick in one week by 6, which does not account for the amount Bella consumes.
+`Hint for a better Method choice`: Using Program-aided Language Modeling can avoid simple arithmetic errors and ensure the correct operations are applied, including subtraction of the consumed apples from the total picked over 6 weeks.
+`Workaround Method`: Program-aided Language Modeling (pal)
+`Attempt 2`: 
+def solution():
+    apples_bella_eats_per_day = 6
+    days_per_week = 7
+    weeks = 6
+    
+    # Calculate how many apples Bella eats in a week
+    apples_bella_eats_per_week = apples_bella_eats_per_day * days_per_week
+    
+    # Assuming this is a third of what Grace picks, find out the total Grace picks
+    apples_grace_picks_per_week = apples_bella_eats_per_week * 3
+    
+    # Calculate the total apples Grace picks in 6 weeks
+    apples_grace_picks_total = apples_grace_picks_per_week * weeks
+    
+    # Since we are interested in how many apples Grace will have after Bella eats her share, 
+    # we subtract the number of apples Bella eats in 6 weeks
+    apples_bella_eats_in_6_weeks = apples_bella_eats_per_week * weeks
+    
+    # Calculate the remaining apples
+    apples_grace_has_after = apples_grace_picks_total - apples_bella_eats_in_6_weeks
+    
+    return apples_grace_has_after
+
+`Answer 2`: 504.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

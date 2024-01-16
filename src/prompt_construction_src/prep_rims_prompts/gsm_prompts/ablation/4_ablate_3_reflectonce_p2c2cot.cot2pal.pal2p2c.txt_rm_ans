@@ -1,0 +1,108 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Dakota gets hit by a bus and has to spend 3 days in the hospital. The hospital charges her $900/day for her bed, $250/hour for two specialists to look at her 15 minutes each, and $1800 for the ambulance ride. How much is Dakota's medical bill?
+`Method`: Chain-of-Thought (cot)
+`Attempt 1`: To solve this problem, we will calculate each of the charges separately and then add them all together to find the total medical bill.
+
+1. Hospital bed charge:
+Dakota was in the hospital for 3 days, and the hospital charges $900 per day for the bed.
+
+Total bed charge = 3 days * $900/day = $2700
+
+2. Specialist charge:
+Dakota is visited by two specialists, each charging $250/hour, but they only look at her for 15 minutes each.
+
+First, we need to convert 15 minutes to hours since the charge is per hour.
+15 minutes is a quarter of an hour (15 minutes / 60 minutes = 0.25 hours).
+
+Charge for one specialist for 15 minutes = $250/hour * 0.25 hours = $62.50
+Since there are two specialists, we double this amount:
+Total specialist charge = 2 * $62.50 = $125
+
+3. Ambulance ride charge:
+The ambulance ride costs $1800.
+
+Finally, we add up all the charges to get the total medical bill:
+
+Total medical bill = Hospital bed charge + Specialist charge + Ambulance charge
+Total medical bill = $2700 + $125 + $1800
+
+Now calculate the sums:
+
+Total medical bill = $2700 + $125 + $1800 = $4625
+
+So Dakota's total medical bill is $4625.
+`Answer 1`: 4625.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
+`Method`: Program-aided Language Modeling (pal)
+`Attempt 1`: 
+def solution():
+    apples_bella_eats_per_day = 6
+    days_per_week = 7
+    weeks = 6
+    
+    # Calculate how many apples Bella eats in a week
+    apples_bella_eats_per_week = apples_bella_eats_per_day * days_per_week
+    
+    # Assuming this is a third of what Grace picks, find out the total Grace picks
+    apples_grace_picks_per_week = apples_bella_eats_per_week * 3
+    
+    # Calculate the total apples Grace picks in 6 weeks
+    apples_grace_picks_total = apples_grace_picks_per_week * weeks
+    
+    # Since we are interested in how many apples Grace will have after Bella eats her share, 
+    # we subtract the number of apples Bella eats in 6 weeks
+    apples_bella_eats_in_6_weeks = apples_bella_eats_per_week * weeks
+    
+    # Calculate the remaining apples
+    apples_grace_has_after = apples_grace_picks_total - apples_bella_eats_in_6_weeks
+    
+    return apples_grace_has_after
+
+`Answer 1`: 504.0
+`Evaluation`: Correct
+
+
+
+`Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define a variable called `bonnie_apples` to represent the number of apples bought by Bonnie and assign it the value 8.
+2. Define a variable called `samuel_extra_apples` to represent the additional number of apples bought by Samuel compared to Bonnie and assign it the value 20.
+3. Calculate the total number of apples bought by Samuel by adding `bonnie_apples` and `samuel_extra_apples`. Let's call this `samuel_apples`.
+4. Define a variable `samuel_ate` to represent the number of apples Samuel ate, which is half of his apples, so `samuel_ate = samuel_apples / 2`.
+5. Define another variable `samuel_pie` to represent the number of apples used to make the pie, which is 1/7th of his apples, so `samuel_pie = samuel_apples / 7`.
+6. Calculate the number of apples Samuel has left by subtracting `samuel_ate` and `samuel_pie` from his total number of apples (`samuel_apples - samuel_ate - samuel_pie`).
+7. Return the final number of apples Samuel has.
+def solution():
+    bonnie_apples = 8
+    samuel_extra_apples = 20
+
+    samuel_apples = bonnie_apples + samuel_extra_apples
+    samuel_ate = samuel_apples / 2
+    samuel_pie = samuel_apples / 7
+
+    samuel_left = samuel_apples - samuel_ate - samuel_pie
+
+    return samuel_left
+
+`Answer 1`: 10.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]

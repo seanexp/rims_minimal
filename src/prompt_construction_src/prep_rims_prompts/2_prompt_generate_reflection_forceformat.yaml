@@ -1,0 +1,34 @@
+system: |
+  You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows, each has its strength and weakness:
+
+  - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+  - Program-aided Language Model (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+  - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+  Now guess the most likely `Mistakes`, and `Hint for a better Method choice` in the examples below. In `Mistakes`, you write the diagnosis of the first attempt. In `Hint for a better Method choice`, you write the hint that starks the benefit of alternative method which helps improving on `Mistakes`. 
+# user: |
+#   `Question`: $QUESTION
+#   `Method`: $WRONG_METHOD
+#   `Attempt 1`: $WRONG_SOLUTION
+#   `Answer 1`: $WRONG_PRED
+#   `Evaluation`: Wrong (correct answer: $ANS)
+#   `Mistakes`: <one_liner_explanation_for_whats_gone_wrong_in_the_attempt>
+#   `Hint for a better Method choice`: <one_liner_hint_to_workaround_with_different_method>
+#   `Workaround Method`: $CORRECT_METHOD
+#   `Attempt 2`: $CORRECT_SOLUTION
+#   `Answer 2`: $CORRECT_PRED
+#   `Evaluation`: Correct
+user: |
+  `Question`: $QUESTION
+  `Method`: $WRONG_METHOD
+  `Attempt 1`: $WRONG_SOLUTION
+  `Answer 1`: $WRONG_PRED
+  `Evaluation`: Wrong
+  `Mistakes`: <one_liner_explanation_for_whats_gone_wrong_in_the_attempt>
+  `Hint for a better Method choice`: <one_liner_hint_to_workaround_with_different_method>
+  `Workaround Method`: $CORRECT_METHOD
+  `Attempt 2`: $CORRECT_SOLUTION
+  `Answer 2`: $CORRECT_PRED
+  `Evaluation`: Correct
+stop: | # null --> checked that the llm generation replicates the part after `workaround method`. validated.
+ `Workaround Method`:

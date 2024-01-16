@@ -1,0 +1,164 @@
+You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+
+- Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
+
+
+
+
+`Question`: Sam is twice as old as Sue. Kendra is 3 times as old as Sam. If Kendra is currently 18, what will be their total age in 3 years?
+`Method`: Program-aided Language Modeling (pal)
+`Attempt 1`: 
+def solution():
+    kendra_age_now = 18
+    # Sam is one third of Kendra's age, as Kendra is 3 times as old as Sam.
+    sam_age_now = kendra_age_now / 3
+    # Sam is twice as old as Sue, so Sue is half of Sam's age.
+    sue_age_now = sam_age_now / 2
+    
+    # Calculate their ages in 3 years.
+    kendra_age_in_3_years = kendra_age_now + 3
+    sam_age_in_3_years = sam_age_now + 3
+    sue_age_in_3_years = sue_age_now + 3
+    
+    # Calculate their total age in 3 years.
+    total_age_in_3_years = kendra_age_in_3_years + sam_age_in_3_years + sue_age_in_3_years
+    
+    return total_age_in_3_years
+
+# Call the solution function and print the result
+print(solution())
+
+`Answer 1`: 36.0
+`Evaluation`: Correct
+
+
+
+`Question`: 3 cloves of garlic can repel 2 vampires, 8 vampire bats or 3 wights. How many cloves of garlic are needed to repel 30 vampires, 12 wights and 40 vampire bats?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Start by considering the ratios given:
+   - 3 cloves of garlic to 2 vampires
+   - 3 cloves of garlic to 8 vampire bats
+   - 3 cloves of garlic to 3 wights
+
+2. Calculate how many cloves of garlic are needed to repel 1 vampire, 1 vampire bat, and 1 wight by using the ratios:
+   - For vampires: `garlic_per_vampire = 3 cloves / 2 vampires`
+   - For vampire bats: `garlic_per_bat = 3 cloves / 8 bats`
+   - For wights: `garlic_per_wight = 3 cloves / 3 wights`
+
+3. Determine how many cloves are needed for 30 vampires, using `garlic_per_vampire`:
+   - `garlic_for_vampires = garlic_per_vampire * 30 vampires`
+
+4. Determine how many cloves are needed for 40 vampire bats, using `garlic_per_bat`:
+   - `garlic_for_bats = garlic_per_bat * 40 bats`
+
+5. Determine how many cloves are needed for 12 wights, using `garlic_per_wight`:
+   - `garlic_for_wights = garlic_per_wight * 12 wights`
+
+6. Add the cloves of garlic needed for vampires, vampire bats, and wights to find the total:
+   - `total_garlic_needed = garlic_for_vampires + garlic_for_bats + garlic_for_wights`
+
+7. The resulting number from step 6 will tell you the total number of cloves of garlic needed to repel all the creatures.
+def solution():
+    # Given ratios
+    garlic_per_vampire = 3 / 2  # Cloves of garlic per 1 vampire
+    garlic_per_bat = 3 / 8      # Cloves of garlic per 1 vampire bat
+    garlic_per_wight = 1        # Cloves of garlic per 1 wight (3/3 equals 1)
+
+    # Calculate cloves of garlic needed for the given numbers
+    garlic_for_vampires = garlic_per_vampire * 30  # For 30 vampires
+    garlic_for_bats = garlic_per_bat * 40          # For 40 vampire bats
+    garlic_for_wights = garlic_per_wight * 12      # For 12 wights
+
+    # Total cloves of garlic required
+    total_garlic_needed = garlic_for_vampires + garlic_for_bats + garlic_for_wights
+    
+    # Since we can't have a fraction of a clove of garlic, we should round up if necessary
+    total_garlic_needed = int(total_garlic_needed) if total_garlic_needed.is_integer() else int(total_garlic_needed) + 1
+    
+    return total_garlic_needed
+
+`Answer 1`: 72.0
+`Evaluation`: Correct
+
+
+
+`Question`: You can buy 4 apples or 1 watermelon for the same price. You bought 36 fruits evenly split between oranges, apples and watermelons, and the price of 1 orange is $0.50. How much does 1 apple cost if your total bill was $66?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 1. Define the problem variables:
+   - The price of 1 orange (`orange_price`) is $0.50.
+   - The total bill (`total_bill`) is $66.
+   - The number of fruits bought (`total_fruits`) is 36, evenly split means 36 divided by 3 types of fruits.
+   - The price of 1 watermelon is the same as 4 apples.
+
+2. Find the number of each type of fruit bought:
+   - `num_oranges` = `total_fruits` / 3
+   - `num_apples` = `total_fruits` / 3
+   - `num_watermelons` = `total_fruits` / 3
+
+3. Calculate the total cost of oranges:
+   - `total_orange_cost` = `num_oranges` * `orange_price`
+
+4. Subtract the total cost of oranges from the total bill to find the cost spent on apples and watermelons:
+   - `cost_apples_watermelons` = `total_bill` - `total_orange_cost`
+
+5. Use the given information that 4 apples cost the same as 1 watermelon to set up the equation for the cost of apples:
+   - Let's represent the price of 1 apple as `apple_price`.
+   - Then the price of 1 watermelon would be `4 * apple_price`.
+
+6. With the total number of apples and watermelons known, calculate their combined cost using `apple_price`:
+   - `combined_cost` = (`num_apples` * `apple_price`) + (`num_watermelons` * `4 * apple_price`)
+
+7. Set `combined_cost` equal to `cost_apples_watermelons` and solve for `apple_price`:
+   - `apple_price * num_apples + apple_price * 4 * num_watermelons` = `cost_apples_watermelons`
+
+8. Plug in the values of `num_apples`, `num_watermelons`, and `cost_apples_watermelons` and solve the equation for `apple_price`.
+
+9. Return the value of `apple_price` as the cost of one apple.
+
+Let's execute these steps:
+
+- `num_fruits_per_type` = 36 / 3 = 12
+- `total_orange_cost` = 12 * $0.50 = $6
+- `cost_apples_watermelons` = $66 - $6 = $60
+- Since `num_apples` = `num_watermelons` = 12, and the cost of 4 apples is the same as 1 watermelon, we can calculate `apple_price` as follows:
+   - `12 * apple_price + 12 * 4 * apple_price` = $60
+  - Simplifying, we get 60 apples' price equals $60, as the watermelon cost is the same as 4 apples, meaning it is also covered by `12 * apple_price`
+   - `60 * apple_price` = $60
+   - `apple_price` = $60 / 60
+   - `apple_price` = $1
+
+So 1 apple costs $1.
+def solution():
+    orange_price = 0.50
+    total_bill = 66
+    total_fruits = 36
+    
+    num_fruits_per_type = total_fruits / 3
+    total_orange_cost = num_fruits_per_type * orange_price
+    cost_apples_watermelons = total_bill - total_orange_cost
+    
+    # Since the cost of 4 apples is the same as 1 watermelon and there are equal numbers of apples and watermelons purchased
+    # We simply find the combined number of 'apple-equivalents' (apples + 4x watermelons)
+    # The number of watermelons is equivalent to 4 times the number of apples because 1 watermelon costs 4 apples, so there are 12 equivalent apple units per watermelon
+    apple_equivalents = (num_fruits_per_type + 4 * num_fruits_per_type)
+    
+    # The cost for all apples and watermelons together is $60, and since we know the total number of fruits is 36,
+    # and one third of these are apples, we can find the apple price by dividing the combined cost by the apple equivalents.
+    apple_price = cost_apples_watermelons / apple_equivalents
+    
+    return apple_price
+  
+# Run the function to get the answer
+# print(solution())  # Should output 1, since each apple costs $1
+`Answer 1`: 1.0
+`Evaluation`: Correct
+
+
+
+Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
+
+`Question`: [QUESTION]
