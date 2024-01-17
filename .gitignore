@@ -1,0 +1,7 @@
+__pycache__/
+openai_key.txt
+**/openai_key.txt
+# dbgoutdir/
+
+#  local only 
+seonil_scripts/

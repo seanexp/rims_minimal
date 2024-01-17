@@ -1,0 +1,30 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "baseline dbg",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": ["baseline_inference", "--backbone", "chatgpt", "--gsm_jslf", "../dataset/dbg.jsonl", "--outdir", "dbgoutdir"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "rims dbg",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": ["rims_inference", "--backbone", "chatgpt", "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/dbgoutdir/chatgpt_01_18_02_40_model_selection3_startidx0.jsonl", "--outdir", "dbgoutdir", "--prompt_f", "prompt_construction_src/prep_rims_prompts/gsm_prompts/3_reflectonce_cot2p2c.pal2cot.pal2p2c.txt_rm_ans"],//, "--start_idx", "6"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+    ]
+
+}

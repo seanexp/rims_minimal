@@ -1,4 +1,4 @@
-from tenacity import retry, wait_chain, wait_fixed
+# from tenacity import retry, wait_chain, wait_fixed
 import openai
 import func_timeout
 import yaml
@@ -8,23 +8,22 @@ import regex
 import re
 
 from typing import Any
-import sys
+from . import math_prompt
 from pathlib import Path
 
 # Get the absolute path of the current script
 THIS_PARENT = Path(__file__).parent.resolve()
 
-
-sys.path.append(str(THIS_PARENT))
-import math_prompt
-sys.path.remove(str(THIS_PARENT))
-
 # Construct the path to the openai_key.txt file
 key_file_path = THIS_PARENT/'openai_key.txt'
 
 # Read the API key from the file
-openai.api_key = open(key_file_path).read().strip()
-
+try:
+    openai.api_key = open(key_file_path).read().strip()
+except Exception as e:
+    print(e)
+    print(f'place your openai_key.txt inside utils/')
+    
 
 
 def exception_handler(func):
@@ -78,6 +77,7 @@ def query_cot(question:str,
         completions: a list containing the CoT solution
     '''
     query_message = get_cot_prompt(question, backbone=backbone)
+    # print(query_message)
     if backbone == 'gpt4':
         model_name = 'gpt-4'
     elif backbone == 'gpt4turbo':
@@ -161,10 +161,12 @@ def query_plancode(question:str,#data: dict,
 
     # generate plan (retry included)
     plan_query_msg = get_plan_prompt(question, k_fewshot=k_fewshot)
+    # print(plan_query_msg)
     plan = _query(model_name=model_name, max_tokens=1024, stop='Question: ', messages=plan_query_msg, temperature=plan_temperature, top_p=1.0, n=1, mode='plan', seed=seed)
 
     if plan:
         code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
+        # print(code_query_msg)
         code = _query(model_name=model_name, max_tokens=1024, stop='Question: ', messages=code_query_msg, temperature=code_temperature, top_p=1.0, n=n, mode='code', seed=seed)#, 
         if not code:
             return [None], [plan], {'codequery': code_query_msg, 'planquery': plan_query_msg}
@@ -189,6 +191,7 @@ def query_pal(question:str,
         completions: a list containing the PAL solution
     '''
     query_message = get_pal_prompt(question, backbone=backbone)
+    # print(query_message)
     if backbone == 'gpt4':
         model_name = 'gpt-4'
     elif backbone == 'gpt4turbo':
@@ -326,13 +329,16 @@ def query_rims_inference(question: str,
                     parse_dd[fld] = matches[0].strip()
                 else:
                     parse_dd[fld] = ''
+        
+        for k in parse_dd.keys(): # found erratic parsings of the rims code solutions (``` at the end not removed properly)
+            if k.startswith("Attempt ") and parse_dd[k].strip().endswith("```"):
+                parse_dd[k] = parse_dd[k].strip().rstrip("```").strip()
+
+
         return parse_dd 
 
     
     def process_rims_out_dict(parse_dd:dict)->dict:
-        import pdb
-        pdb.set_trace()
-
         '''
         in:
             parsed_dict: contains fields that is directly related to the prompt response such as...
@@ -904,11 +910,6 @@ def safe_execute_turbo(code_string: str):
              ans = None
     except (func_timeout.FunctionTimedOut, IndexError):
         ans = None
-    
-    try:
-        ans = float(ans) if ans is not None or  else ans 
-    except:
-        ans = None 
 
     return ans
 
@@ -936,10 +937,10 @@ def extract_num_turbo(solution: str):
 
 
 
-### retry wrapper ###
-@retry(wait=wait_chain(*[wait_fixed(3) for i in range(5)])) #defining backoff for retrying.
-def do_with_tenacity(func, *args, **kwargs):
-    return func(*args, **kwargs)
+# ### retry wrapper ###
+# @retry(wait=wait_chain(*[wait_fixed(3) for i in range(5)])) #defining backoff for retrying.
+# def do_with_tenacity(func, *args, **kwargs):
+#     return func(*args, **kwargs)
 
 
 
