@@ -1,7 +1,9 @@
-__pycache__/
 openai_key.txt
-**/openai_key.txt
-# dbgoutdir/
+
+
 
 #  local only 
+__pycache__/
 seonil_scripts/
+.vscode/
+# dbgoutdir/
