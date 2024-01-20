@@ -998,7 +998,7 @@ def _execute(code, code_return: str):
 
     except Exception as exp:
         print("Executing code error", exp)
-        print(f"{code=}")
+        print(f"code:\n{code}")
         print(f"{code_return=}")
         print(f"{(solution is None)=}")
         print(f"{funcname=}")
