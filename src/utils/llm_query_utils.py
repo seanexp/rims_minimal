@@ -1007,6 +1007,12 @@ def _execute(code, code_return: str):
 
 ### executing a code
 def safe_execute_turbo(code_string: str):
+    def _convert_to_float_if_possible(ans):
+        try:
+            return float(ans)
+        except Exception:
+            return ans
+
     # === find code snippets between def solution(): and return ===
     try:
         code_list = code_string.strip().split("\n")
@@ -1045,6 +1051,8 @@ def safe_execute_turbo(code_string: str):
                     code_return,
                 ),
             )
+            ans = _convert_to_float_if_possible(ans)
+            ans = str(ans) if not isinstance(ans, float) else ans
         else:
             ans = None
     except (func_timeout.FunctionTimedOut, IndexError, NameError, SyntaxError):
