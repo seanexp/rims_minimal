@@ -4,3 +4,4 @@ func_timeout
 regex
 sympy
 pqdm
+antlr4-python3-runtime==4.11
