@@ -2,7 +2,7 @@ openai_key.txt
 
 
 
-#  local only 
+#  local only
 __pycache__/
 seonil_scripts/
 .vscode/

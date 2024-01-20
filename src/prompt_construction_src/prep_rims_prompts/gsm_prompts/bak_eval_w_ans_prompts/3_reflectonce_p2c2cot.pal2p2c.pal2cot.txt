@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -18,19 +18,19 @@ Followings are the examples of correcting the wrong solutions with a `Workaround
 5. Assign the number of laps that Kristin runs, which is given as 12 (let's call this `laps_kristin = 12`).
 6. Since Kristin is running 12 time around the adult field and both start and finish at the same time, we find the time Kristin spent running by `time = laps_kristin / speed_kristin`.
 7. Since Sarith is running for the same amount of time as Kristin, use this time to calculate how many laps Sarith completes: `laps_sarith = time * speed_sarith`.
-8. Since Sarith's speed is a third of Kristin's, for every lap Kristin runs, Sarith should run three laps on the children's football field because the children's football field is half the distance and Sarith runs at one-third the speed. 
+8. Since Sarith's speed is a third of Kristin's, for every lap Kristin runs, Sarith should run three laps on the children's football field because the children's football field is half the distance and Sarith runs at one-third the speed.
 9. Calculate the total number of laps Sarith runs: `laps_sarith_total = laps_kristin * 3`.
 10. Return the value of `laps_sarith_total`.
 def solution():
     speed_kristin = 1  # We can assume unit speed for Kristin, as we'll calculate relative speed.
     speed_sarith = speed_kristin / 3
-    
+
     laps_kristin = 12
-    
+
     # Sarith runs three times more laps because for every lap Kristin runs
     # Sarith runs three laps if the distance is half and speed is one-third.
     laps_sarith_total = laps_kristin * 3
-    
+
     return laps_sarith_total
 `Answer 1`: 36.0
 `Evaluation`: Wrong (correct answer: 8.0)
@@ -41,11 +41,11 @@ def solution():
 
 Since Kristin can run three times faster than Sarith and she runs around the adult football field, which is twice the distance of the children's field, we can work out the laps Sarith runs as follows:
 
-Let's assume the distance around the children's football field is "d". The distance around the adult football field would then be "2d". 
+Let's assume the distance around the children's football field is "d". The distance around the adult football field would then be "2d".
 
 If Kristin runs 12 laps around the adult field, she covers a total distance of 12 * 2d = 24d.
 
-Sarith runs around the smaller field, which is half the distance (d). 
+Sarith runs around the smaller field, which is half the distance (d).
 
 Since Kristin runs three times faster, Sarith would be able to cover one-third of the distance Kristin runs during the same amount of time.
 
@@ -68,7 +68,7 @@ Sarith would have run 8 laps around the children's football field.
 
 `Question`: Kristin can run three times faster than Sarith. If Kristin runs 12 times around the adult football field and Sarith runs at the same time around the children's football field that is half the distance as the other field, how many laps did Sarith go around the children's football field?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     kristin_speed_ratio = 3 # Kristin can run 3 times faster than Sarith
     kristin_laps = 12
@@ -96,7 +96,7 @@ print(solution())
 4. The distance that Sarith runs around the children's football field is half of Kristin's, so we'll define `distance_children_field = distance_adult_field / 2`.
 5. Kristin runs 12 laps around the adult field, which means she covers a distance of `12 * distance_adult_field`.
 6. Since Kristin can run three times faster than Sarith, Sarith's time to run one lap around the children's field is the same as the time for Kristin to run three laps around the adult field.
-7. Therefore, for every 3 laps Kristin completes, Sarith completes 6 laps around the children's field (because the children's field is half the distance of the adult field). 
+7. Therefore, for every 3 laps Kristin completes, Sarith completes 6 laps around the children's field (because the children's field is half the distance of the adult field).
 8. To find the total laps Sarith did, we need to calculate `(Kristin's total laps / 3) * 6`.
 9. Insert the number of laps Kristin ran around the adult field (which is 12) into the equation: `(12 / 3) * 6`.
 10. Solve this equation to find out how many laps Sarith went around the children's football field.
@@ -105,18 +105,18 @@ def solution():
     speed_kristin = 3
     # Sarith runs at a speed that is one-third of Kristin's
     speed_sarith = speed_kristin / 3
-    
+
     # Distance definitions are also arbitrary for the same reason; only ratios matter here
     distance_adult_field = 1  # let's assume 1 unit for simplicity
     distance_children_field = distance_adult_field / 2
-    
+
     # Calculating total distance covered by Kristin
     distance_covered_kristin = 12 * distance_adult_field
-    
+
     # Finding the ratio of laps (12 laps by Kristin is equivalent to what Sarith runs)
     # Every 1 lap of Kristin (adult field) is equivalent to 2 laps of Sarith (children field) because of half distance
     laps_ratio = 2
-    
+
     # Calculating total laps by Sarith with the lap ratio
     laps_sarith = (12 / speed_kristin ) * laps_ratio * speed_sarith
 
@@ -136,7 +136,7 @@ solution()  # This should return 24
 
 `Question`: When Jeffrey walks, for every three steps forward, he takes two steps backwards.  Therefore, if the distance between the house and the mailbox is 66 steps, what is the total number of steps Jeffrey takes when he goes from the house to the mailbox?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     distance_to_mailbox = 66
     net_progress_per_cycle = 3 - 2  # for every three steps forward he takes two back

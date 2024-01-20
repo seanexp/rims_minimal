@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -17,7 +17,7 @@ On Friday, Nedy ate twice the amount, which means 2 * 8 = 16 packs of crackers o
 So in total, Nedy ate 8 (from Monday to Thursday) + 16 (on Friday) = 24 packs of crackers.
 So the answer is 24.
 `Answer 1`: 24.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The mistake in the original attempt is in misunderstanding the problem statement. It is stated that Nedy can eat 8 packs of crackers from Monday to Thursday, which suggests that Nedy eats 8 packs each day, not for the whole period from Monday to Thursday. The calculation was based on the incorrect assumption that the 8 packs were for the entire four days.
 `Hint for a better Method choice`: A program-aided language model or a planned coding approach would help carry out the calculations more systematically to avoid such misunderstandings and provide accurate arithmetic computations.
 `Workaround Method`: Plan-and-then-Code (p2c)
@@ -31,7 +31,7 @@ def solution():
     crackers_mon_to_thu = crackers_per_day * 4
     crackers_friday = crackers_per_day * 2
     total_crackers = crackers_mon_to_thu + crackers_friday
-    
+
     return total_crackers
 
 `Answer 2`: 48.0
@@ -41,7 +41,7 @@ def solution():
 
 `Question`: Two white socks cost 25 cents more than a single brown sock. If two white socks cost 45 cents, how much would you pay for 15 brown socks?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     cost_two_white_socks = 45  # cost in cents
     cost_difference = 25  # cost difference in cents
@@ -59,7 +59,7 @@ def solution():
 print(solution())
 
 `Answer 1`: 300.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The error in the first attempt is due to a misunderstanding of the problem statement. The cost of one brown sock should not be calculated by simply subtracting the cost difference from the cost of two white socks. Instead, the cost for two white socks should be divided by two to find the cost of one white sock first before finding the cost of a single brown sock.
 `Hint for a better Method choice`: Use Chain of Thought to clearly understand the relationship between the cost of brown and white socks before calculating the final cost for 15 brown socks. This will help avoid the pitfall of incorrect subtraction that led to the error in the initial attempt.
 `Workaround Method`: Chain-of-Thought (cot)
@@ -82,7 +82,7 @@ So, you would pay $3 for 15 brown socks.
 
 `Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     bonnie_apples = 8
     samuel_apples_more = 20
@@ -94,7 +94,7 @@ def solution():
     return result
 
 `Answer 1`: 12.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The mistake in the first attempt lies in the incorrect calculation of apples used for the pie. The attempt incorrectly divides the halved number of apples by 7 to determine the amount used for the pie when it should be calculated from the original total of apples Samuel bought.
 `Hint for a better Method choice`: A plan-and-then-code approach would ensure a clear step-by-step process is outlined before coding, which is crucial in a problem with multiple sequential calculations to avoid logical errors.
 `Workaround Method`: Plan-and-then-Code (p2c)

@@ -1,9 +1,9 @@
 # "Question:" as a stop sequence
 system_msg: You are now implementing python answers to math-word-problems so that the learner want to find it as a good reference for his/her practice. Given the question and its guide for solving it, write a function named `solution` to answer it.
 
-user_template: | # the following template has \n at the end 
+user_template: | # the following template has \n at the end
   {QUESTION}
-  
+
   Guide:
   {PLAN}
 fewshots_user:
@@ -105,22 +105,22 @@ fewshots_assistant:
         final_balls = remaining_balls - balls_lost_wednesday
 
         return final_balls
-  - | 
+  - |
     def solution():
         count_computers = 9
-        
+
         for _ in range(4):  # Monday to Thursday
             count_computers += 5
-        
+
         return count_computers
   - |
     def solution():
         initial_toys = 5
         toys_from_mom = 2
         toys_from_dad = 2
-        
+
         total_toys = initial_toys + toys_from_mom + toys_from_dad
-        
+
         return total_toys
   - |
     def solution():
@@ -128,33 +128,33 @@ fewshots_assistant:
         current_lollipops = 12
 
         x = initial_lollipops - current_lollipops
-        
+
         return x
   - |
     def solution():
         initial_trees = 15
         final_trees = 21
-        
+
         trees_planted_today = final_trees - initial_trees
-        
+
         return trees_planted_today
   - |
     def solution():
         num_cars = 3
         new_cars = 2
-        
+
         num_cars += new_cars
-        
+
         return num_cars
   - |
     def solution():
         leah_chocolates_initial = 32
         sister_chocolates_initial = 42
-        
+
         chocolates_ate = 35
 
         total_chocolates_initial = leah_chocolates_initial + sister_chocolates_initial
-        
+
         chocolates_left = total_chocolates_initial - chocolates_ate
-        
+
         return chocolates_left

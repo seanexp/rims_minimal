@@ -1,9 +1,11 @@
 # ===== Codex =====
 
 # ===== ChatGPT =====
-TURBO_COT_SYSTEM = 'You are a helpful assistant that can solve math problems step by step.'
+TURBO_COT_SYSTEM = (
+    "You are a helpful assistant that can solve math problems step by step."
+)
 
-TURBO_COT_USER = '''
+TURBO_COT_USER = """
 Let's solve the following math problems. You need to solve these math problems step by step. Here is one example how to do it,
 
 Question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
@@ -43,9 +45,9 @@ Question: If there are 3 cars in the parking lot and 2 more cars arrive, how man
 
 
 Question: Leah had 32 chocolates and her sister had 10 more chocolates than her. If they ate 35, how many pieces do they have left in total?
-'''.strip()
+""".strip()
 
-TURBO_COT_ASSISTANT = '''
+TURBO_COT_ASSISTANT = """
 Answer:
 Michael started with 58 golf balls.
 And he lost 23 golf balls on tuesday.
@@ -107,10 +109,10 @@ So in total they had 32 + 42 = 74 chocolates.
 Then they ate 35 chocolates.
 Therefore they had 74 - 35 = 39 chocolates left.
 So the answer is 39.
-'''.strip()
+""".strip()
 
 
-TURBO_PAL_SYSTEM = 'You are a helpful assistant that generates Python code to answer arithmetic questions. '
+TURBO_PAL_SYSTEM = "You are a helpful assistant that generates Python code to answer arithmetic questions. "
 
 TURBO_PAL_USER = '''
 Let's use python to solve math problems. You need to write python code to answer these math questions. Here is one example how to do it,
@@ -234,9 +236,9 @@ def solution():
 '''.strip()
 
 
-TURBO_SELECT_SYSTEM = '''You are a helpful assistant that can identify the correct answer to the math problem.'''
+TURBO_SELECT_SYSTEM = """You are a helpful assistant that can identify the correct answer to the math problem."""
 
-TURBO_SELECT_USER = '''There are two choices to the same math problem. One uses natural language to answer the question, while the other uses Python program to answer it. Either of them can correctly answer the math problem. You need to identify which choice can correctly answer the math problem. Here is one example how to do it,
+TURBO_SELECT_USER = """There are two choices to the same math problem. One uses natural language to answer the question, while the other uses Python program to answer it. Either of them can correctly answer the math problem. You need to identify which choice can correctly answer the math problem. Here is one example how to do it,
 
 Math problem: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
 
@@ -303,7 +305,7 @@ def solution():
     result = computers_total
     return result
 
-Which of the above two choices can correctly answer the math problem? 
+Which of the above two choices can correctly answer the math problem?
 
 
 
@@ -326,7 +328,7 @@ def solution():
     result = total_toys
     return result
 
-Which of the above two choices can correctly answer the math problem? 
+Which of the above two choices can correctly answer the math problem?
 
 
 
@@ -347,11 +349,11 @@ def solution():
     result = trees_added
     return result
 
-Which of the above two choices can correctly answer the math problem? 
-'''.strip()
+Which of the above two choices can correctly answer the math problem?
+""".strip()
 
 
-TURBO_SELECT_ASSISTANT = '''
+TURBO_SELECT_ASSISTANT = """
 (B) can correctly answer the math problem. Because (A) adds 2 more balls after losing 2 more on Wednesday instead of subtracting them.
 
 
@@ -365,13 +367,15 @@ TURBO_SELECT_ASSISTANT = '''
 
 
 (A) can correctly answer the math problem. Because (B) subtracts the final number of trees from the initial number of trees instead of subtracting the initial number of trees from the final number of trees.
-'''.strip()
+""".strip()
 
 
 # === GPT-4 ===
-GPT4_COT_SYSTEM = 'You are a helpful assistant that can solve math problems step by step.'
+GPT4_COT_SYSTEM = (
+    "You are a helpful assistant that can solve math problems step by step."
+)
 
-GPT4_COT_USER = '''
+GPT4_COT_USER = """
 Let's solve the following math problems. You need to solve these math problems step by step. Here is one example how to do it,
 
 Question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
@@ -399,9 +403,9 @@ Question: Shawn has five toys. For Christmas, he got two toys each from his mom 
 
 
 Question: Jason had 20 lollipops. He gave Denny some lollipops. Now Jason has 12 lollipops. How many lollipops did Jason give to Denny?
-'''.strip()
+""".strip()
 
-GPT4_COT_ASSISTANT = '''
+GPT4_COT_ASSISTANT = """
 Answer:
 Michael started with 58 golf balls.
 And he lost 23 golf balls on tuesday.
@@ -436,13 +440,15 @@ Jason started with 20 lollipops.
 Then he had 12 after giving some to Denny.
 So he gave Denny 20 - 12 = 8 lollipops.
 So the answer is 8.
-'''.strip()
+""".strip()
 
 
-GPT4_PAL_SYSTEM = 'You are a helpful assistant that can solve math problems by using Python code.'
+GPT4_PAL_SYSTEM = (
+    "You are a helpful assistant that can solve math problems by using Python code."
+)
 
 
-GPT4_PAL_USER = '''
+GPT4_PAL_USER = """
 Let's use python to solve math problems. You need to write python code to answer these math problems. Here is one example how to do it,
 
 Question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
@@ -483,10 +489,10 @@ Question: Jason had 20 lollipops. He gave Denny some lollipops. Now Jason has 12
 
 
 
-'''.strip()
+""".strip()
 
 
-GPT4_PAL_ASSISTANT = '''
+GPT4_PAL_ASSISTANT = """
 def solution():
     golf_balls_initial = 58
     golf_balls_lost_tuesday = 23
@@ -525,11 +531,11 @@ def solution():
     denny_lollipops = jason_lollipops_initial - jason_lollipops_after
     result = denny_lollipops
     return result
-'''.strip()
+""".strip()
 
-GPT4_SELECT_SYSTEM = '''You are a helpful assistant that can identify the correct answer to the math problem.'''
+GPT4_SELECT_SYSTEM = """You are a helpful assistant that can identify the correct answer to the math problem."""
 
-GPT4_SELECT_USER = '''
+GPT4_SELECT_USER = """
 There are two choices to the same math problem. One uses natural language to answer the question, while the other uses Python code to answer it. Either of them can correctly answer the math problem. You need to identify which choice can correctly answer the math problem. Here is one example how to do it,
 
 Math problem: There were nine computers in the server room. Five more computers were installed each day, from monday to thursday. How many computers are now in the server room?
@@ -612,7 +618,7 @@ def solution():
     result = total_items
     return result
 
-Which of the above two choices can correctly answer the math problem? 
+Which of the above two choices can correctly answer the math problem?
 
 
 
@@ -684,10 +690,10 @@ def solution():
     return result
 
 Which of the above two choices can correctly answer the math problem?
-'''.strip()
+""".strip()
 
 
-GPT4_SELECT_ASSISTANT = '''
+GPT4_SELECT_ASSISTANT = """
 (B) can correctly answer the math problem. Because (A) incorrectly calculated the area of the torn-off portion instead of the remaining portion.
 
 
@@ -700,9 +706,8 @@ GPT4_SELECT_ASSISTANT = '''
 
 
 
-(A) can correctly answer the math problem. Because (B) incorrectly calculates the apple_cost since 4 apples or 1 watermelon for the same price means 1 watermelon is 4 times the price of 1 apple. 
-'''.strip()
-
+(A) can correctly answer the math problem. Because (B) incorrectly calculates the apple_cost since 4 apples or 1 watermelon for the same price means 1 watermelon is 4 times the price of 1 apple.
+""".strip()
 
 
 # === for P2C (turbo, gpt-4) ===
@@ -815,10 +820,10 @@ def solution():
 5. After the loop finishes, the value of `num_computers` will represent the total number of computers in the server room. Return the final result.
 def solution():
     num_computers = 9
-    
+
     for _ in range(4-1):  # 4th day of the week (Thursday) - 1st day of the week (Monday)
         num_computers += 5
-    
+
     return num_computers
 
 Which of the above three choices can correctly answer the math problem?
@@ -833,6 +838,5 @@ TURBO_SELECT_ASSISTANT3 = """(C) can correctly answer the math problem. Because 
 
 
 GPT4_SELECT_SYSTEM3 = GPT4_SELECT_SYSTEM
-GPT4_SELECT_USER3 = TURBO_SELECT_USER3 
-GPT4_SELECT_ASSISTANT3 = TURBO_SELECT_ASSISTANT3 
-
+GPT4_SELECT_USER3 = TURBO_SELECT_USER3
+GPT4_SELECT_ASSISTANT3 = TURBO_SELECT_ASSISTANT3

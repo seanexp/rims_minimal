@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -11,7 +11,7 @@ Followings are the examples of correcting the wrong solutions with a `Workaround
 
 `Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     bonnie_apples = 8
     samuel_apples_more = 20
@@ -57,7 +57,7 @@ def solution():
     initial_earrings = 12
     earrings_given = initial_earrings / 2
     total_earrings_alissa = 3 * earrings_given
-    
+
     return int(total_earrings_alissa)
 `Answer 1`: 18.0
 `Evaluation`: Wrong (correct answer: 36.0)
@@ -106,7 +106,7 @@ def solution():
 `Mistakes`: The calculation for `total_pages` in the provided attempt is incorrect because the formula used is `total_pages = (pages_read * 3) // 2` which would actually calculate three halves of `pages_read` instead of the full number of pages in the book. The correct calculation should use the formula `total_pages = pages_read / (2/3)` or `total_pages = pages_read * (3/2)` to find the total number of pages.
 `Hint for a better Method choice`: Using Chain of Thought could help conceptualize the proportional relationship of the pages read to the total book's length, avoiding algebraic manipulation errors.
 `Workaround Method`: Program-aided Language Modeling (pal)
-`Attempt 2`: 
+`Attempt 2`:
 def solution():
     pages_per_day = 8
     days_read = 12

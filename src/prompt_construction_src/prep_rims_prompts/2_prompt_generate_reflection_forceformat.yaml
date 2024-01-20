@@ -2,10 +2,10 @@ system: |
   You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows, each has its strength and weakness:
 
   - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-  - Program-aided Language Model (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+  - Program-aided Language Model (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
   - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
-  Now guess the most likely `Mistakes`, and `Hint for a better Method choice` in the examples below. In `Mistakes`, you write the diagnosis of the first attempt. In `Hint for a better Method choice`, you write the hint that starks the benefit of alternative method which helps improving on `Mistakes`. 
+  Now guess the most likely `Mistakes`, and `Hint for a better Method choice` in the examples below. In `Mistakes`, you write the diagnosis of the first attempt. In `Hint for a better Method choice`, you write the hint that starks the benefit of alternative method which helps improving on `Mistakes`.
 # user: |
 #   `Question`: $QUESTION
 #   `Method`: $WRONG_METHOD

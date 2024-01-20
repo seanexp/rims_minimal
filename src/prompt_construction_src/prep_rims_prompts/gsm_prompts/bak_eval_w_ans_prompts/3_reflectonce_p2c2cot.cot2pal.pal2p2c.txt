@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -25,16 +25,16 @@ def solution():
     specialist_time_in_hours = 0.25  # 15 minutes is 0.25 hours
     number_of_specialists = 2
     ambulance_cost = 1800
-    
+
     # Calculate total bed cost
     total_bed_cost = daily_bed_rate * days_in_hospital
-    
+
     # Calculate total specialists cost
     total_specialist_cost = specialist_hourly_rate * specialist_time_in_hours * number_of_specialists
-    
+
     # Calculate total medical bill
     total_medical_bill = total_bed_cost + total_specialist_cost * days_in_hospital + ambulance_cost
-    
+
     return total_medical_bill
 `Answer 1`: 4875.0
 `Evaluation`: Wrong (correct answer: 4625.0)
@@ -104,28 +104,28 @@ Therefore, after 6 weeks, Grace will have 756 apples.
 `Mistakes`: The final calculation in Attempt 1 is incorrect. The question asks how many apples Grace will have after Bella eats her share, which means we need to subtract the amount eaten by Bella from the total Grace picks over 6 weeks, but the solution simply multiplies the number of apples Grace would pick in one week by 6, which does not account for the amount Bella consumes.
 `Hint for a better Method choice`: Using Program-aided Language Modeling can avoid simple arithmetic errors and ensure the correct operations are applied, including subtraction of the consumed apples from the total picked over 6 weeks.
 `Workaround Method`: Program-aided Language Modeling (pal)
-`Attempt 2`: 
+`Attempt 2`:
 def solution():
     apples_bella_eats_per_day = 6
     days_per_week = 7
     weeks = 6
-    
+
     # Calculate how many apples Bella eats in a week
     apples_bella_eats_per_week = apples_bella_eats_per_day * days_per_week
-    
+
     # Assuming this is a third of what Grace picks, find out the total Grace picks
     apples_grace_picks_per_week = apples_bella_eats_per_week * 3
-    
+
     # Calculate the total apples Grace picks in 6 weeks
     apples_grace_picks_total = apples_grace_picks_per_week * weeks
-    
-    # Since we are interested in how many apples Grace will have after Bella eats her share, 
+
+    # Since we are interested in how many apples Grace will have after Bella eats her share,
     # we subtract the number of apples Bella eats in 6 weeks
     apples_bella_eats_in_6_weeks = apples_bella_eats_per_week * weeks
-    
+
     # Calculate the remaining apples
     apples_grace_has_after = apples_grace_picks_total - apples_bella_eats_in_6_weeks
-    
+
     return apples_grace_has_after
 
 `Answer 2`: 504.0
@@ -135,7 +135,7 @@ def solution():
 
 `Question`: Bonnie and Samuel went to the market together. Bonnie bought 8 apples. Samuel bought 20 more apples than Bonnie. Samuel then ate half of them and used 1/7 of them to make apple pie. How many apples does Samuel have left?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     bonnie_apples = 8
     samuel_apples_more = 20

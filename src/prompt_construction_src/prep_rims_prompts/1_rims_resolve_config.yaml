@@ -3,12 +3,12 @@ do_p2c: true
 
 dbg: true # dbg option
 to_reflect_jsl: rims_train_out/nov25/failed_METHOD_n3_numtrain1000_gpt4turbo_vT1.0_cT1.0_seed777.jsonl
-    
+
 verbal_T: 1. # temperature querying LLM for verbal outputs (e.g. cot, plan generation, reflection, etc.)
 code_T: 1. # temperature querying LLM for code outputs (e.g. plan2code or pal)
 
 
-n_llmquery: 5 # number of choices to be checked for failure 
+n_llmquery: 5 # number of choices to be checked for failure
 seed: 777 # if I query with seed, it is deterministic but still random.
 
 reattempt_same_method: false # in case you might want contrastive example with same method reattempting to fix, turn this to `true`

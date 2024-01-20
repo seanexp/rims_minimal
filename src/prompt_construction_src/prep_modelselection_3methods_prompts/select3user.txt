@@ -116,10 +116,10 @@ def solution():
 5. After the loop finishes, the value of `num_computers` will represent the total number of computers in the server room. Return the final result.
 def solution():
     num_computers = 9
-    
+
     for _ in range(4):  # Monday to Thursday
         num_computers += 5
-    
+
     return num_computers
 
 
@@ -127,7 +127,7 @@ Which of the above three choices can correctly answer the math problem?
 
 
 
- 
+
 
 
 
@@ -159,9 +159,9 @@ def solution():
     initial_toys = 5
     mom_toys = 2
     dad_toys = 2
-    
+
     total_toys = initial_toys + mom_toys + dad_toys
-    
+
     return total_toys
 
 
@@ -169,7 +169,7 @@ Which of the above three choices can correctly answer the math problem?
 
 
 
- 
+
 
 
 
@@ -199,9 +199,9 @@ def solution():
 def solution():
     initial_trees = 15
     final_trees = 21
-    
+
     trees_planted_today = final_trees - initial_trees
-    
+
     return trees_planted_today
 
 Which of the above three choices can correctly answer the math problem?

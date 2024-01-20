@@ -39,10 +39,10 @@ Question: There were nine computers in the server room. Five more computers were
 5. After the loop finishes, the value of `num_computers` will represent the total number of computers in the server room. Return the final result.
 def solution():
     num_computers = 9
-    
+
     for _ in range(4):  # Monday to Thursday
         num_computers += 5
-    
+
     return num_computers
 ====
 Question: Shawn has five toys. For Christmas, he got two toys each from his mom and dad. How many toys does he have now?
@@ -54,9 +54,9 @@ def solution():
     initial_toys = 5
     mom_toys = 2
     dad_toys = 2
-    
+
     total_toys = initial_toys + mom_toys + dad_toys
-    
+
     return total_toys
 ====
 Question: There are 15 trees in the grove. Grove workers will plant trees in the grove today. After they are done, there will be 21 trees. How many trees did the grove workers plant today?
@@ -68,7 +68,7 @@ Question: There are 15 trees in the grove. Grove workers will plant trees in the
 def solution():
     initial_trees = 15
     final_trees = 21
-    
+
     trees_planted_today = final_trees - initial_trees
-    
+
     return trees_planted_today

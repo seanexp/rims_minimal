@@ -1,7 +1,8 @@
-from pathlib import Path
 import re
+from pathlib import Path
 
-def remove_1st_attempt_and_edit_2nd(prompt:str)->str:
+
+def remove_1st_attempt_and_edit_2nd(prompt: str) -> str:
     # remove 1st attempt
     pattern = r"(`Method`:[\s\S]*?)`Workaround Method`"
     matches = re.findall(pattern, text, re.DOTALL)
@@ -14,14 +15,15 @@ def remove_1st_attempt_and_edit_2nd(prompt:str)->str:
     prompt = prompt.replace("`Workaround Method`", "`Method`")
     prompt = prompt.replace("`Answer 2`", "`Answer 1`")
     revised = prompt.replace("`Attempt 2`", "`Attempt 1`")
-    
+
     return revised
 
-reflect_once = list(Path().glob("3_reflectonce_*.txt")) 
+
+reflect_once = list(Path().glob("3_reflectonce_*.txt"))
 for f in reflect_once:
     newf = f"4_ablate_{f.name}"
     text = f.open().read().strip()
     revised = remove_1st_attempt_and_edit_2nd(text)
-    with open(newf, 'w') as wf:
+    with open(newf, "w") as wf:
         wf.write(revised)
         print(newf)

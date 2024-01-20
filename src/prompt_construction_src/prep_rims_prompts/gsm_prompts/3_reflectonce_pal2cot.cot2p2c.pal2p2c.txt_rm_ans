@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Workaround Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -11,28 +11,28 @@ Followings are the examples of correcting the wrong solutions with a `Workaround
 
 `Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     apples_bella_eats_per_day = 6
     days_per_week = 7
     weeks = 6
-    
+
     # Calculate how many apples Bella consumes in one week
     apples_bella_consumes_weekly = apples_bella_eats_per_day * days_per_week
-    
+
     # Assuming this is a third of what Grace picks, let's find the total Grace picks weekly
     apples_grace_picks_weekly = apples_bella_consumes_weekly * 3
-    
+
     # Now calculate how many apples Grace will have after 6 weeks
     apples_grace_has_after_six_weeks = apples_grace_picks_weekly * weeks
-    
+
     return apples_grace_has_after_six_weeks
 
 # Let's call the function and print the result to get the answer
 print(solution())
 
 `Answer 1`: 756.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The mistake in the first attempt is the misinterpretation that the calculation of Grace's apples is the total she will have after 6 weeks, without subtracting what Bella has consumed.
 `Hint for a better Method choice`: The chain of thought (cot) approach emphasizes a logical step-by-step breakdown of the problem, which could avoid the oversight of not subtracting the amount consumed by Bella.
 `Workaround Method`: Chain-of-Thought (cot)
@@ -88,7 +88,7 @@ Since there are 7 days in one week, we multiply the daily consumption by 7 to ge
 
 So the answer is that the 9 pandas eat 2100 pounds of bamboo in a week.
 `Answer 1`: 9.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The one-liner explanation for what's gone wrong in the attempt is that the final numerical answer is listed incorrectly as 9.0 instead of 2100.0 which was correctly calculated in the explanation.
 `Hint for a better Method choice`: An alternative method using programming can help avoid simple numerical transcription errors in the final answer.
 `Workaround Method`: Plan-and-then-Code (p2c)
@@ -107,11 +107,11 @@ def solution():
 
     total_small_panda_bamboo_day = small_panda_bamboo_day * number_of_small_pandas
     total_big_panda_bamboo_day = big_panda_bamboo_day * number_of_big_pandas
-    
+
     total_bamboo_day = total_small_panda_bamboo_day + total_big_panda_bamboo_day
 
     total_bamboo_week = total_bamboo_day * 7
-    
+
     return total_bamboo_week
 
 `Answer 2`: 2100.0
@@ -121,12 +121,12 @@ def solution():
 
 `Question`: Jerry is making cherry syrup. He needs 500 cherries per quart of syrup. It takes him 2 hours to pick 300 cherries and 3 hours to make the syrup. How long will it take him to make 9 quarts of syrup?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     cherries_per_quart = 500
     total_quarts = 9
     total_cherries_needed = cherries_per_quart * total_quarts
-    
+
     cherries_per_2_hours = 300
     time_per_300_cherries = 2  # hours
 
@@ -135,7 +135,7 @@ def solution():
     # We use the ceiling to ensure we pick enough cherries even if the total isn't a multiple of 300.
     time_to_pick_per_quart = time_per_300_cherries / cherries_per_2_hours * cherries_per_quart
     total_time_to_pick = time_to_pick_per_quart * total_quarts
-    
+
     syrup_making_time = 3  # hours for each quart
     total_time_to_make_syrup = syrup_making_time * total_quarts
 
@@ -144,7 +144,7 @@ def solution():
     return total_time
 
 `Answer 1`: 57.0
-`Evaluation`: Wrong 
+`Evaluation`: Wrong
 `Mistakes`: The error in the first attempt came from incorrect calculation of the time taken to pick cherries for 9 quarts. The method attempted to divide and then multiply by `cherries_per_quart` in the wrong order, resulting in a major computational error. They also incorrectly assumed that the syrup-making time would multiply with the quantity of the syrup, while the question implies that the syrup-making time is independent of the quantity.
 `Hint for a better Method choice`: Using a Plan-and-then-Code method allows one to break down the problem step-by-step, which can help prevent confusion in the order of operations and incorrect assumptions about time scaling with quantity.
 `Workaround Method`: Plan-and-then-Code (p2c)
@@ -161,14 +161,14 @@ def solution():
 
     # Total cherries needed
     total_cherries_needed = cherries_per_quart * quarts_to_make
-    
+
     # Time to pick cherries for one quart
     time_per_cherry = picking_time / 300
     total_picking_time = time_per_cherry * total_cherries_needed
 
     # Total time: picking + making
     total_time = total_picking_time + making_time  # Making time is the same regardless of quantity
-    
+
     return total_time
 
 `Answer 2`: 33.0

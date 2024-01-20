@@ -1,12 +1,11 @@
-from fire import Fire
-import jsonlines as jsl
-from tqdm import tqdm
-from pqdm.threads import pqdm
-import pandas as pd 
-
 from datetime import datetime
 from typing import Any
 
+import jsonlines as jsl
+import pandas as pd
+from fire import Fire
+from pqdm.threads import pqdm
+from tqdm import tqdm
 
 from utils.llm_query_utils import *
 
@@ -27,22 +26,23 @@ row:
     - solmap:
         {cot: pal: p2c:}
     - majority_ans: None or majority answer (final answer to be evaluated)
-    - selection_or_rims: 
+    - selection_or_rims:
         각자에 합당한 아웃풋
         rims: eval_friendly_d
-        model_selection (baseline): 
+        model_selection (baseline):
             {
-                good_method, 
+                good_method,
                 good_ans,
                 selection_choice,
-                bad_method, 
+                bad_method,
                 bad_ans,
             }
         majority_vote: True (if inference ends with majority vote)
-    
+
 
 
 """
+
 
 def indiv_inference(
     row: dict = None,
@@ -130,16 +130,14 @@ def indiv_inference(
                 seed=seed,
             )
 
-
-            plan = plan_lst.pop() 
+            plan = plan_lst.pop()
             p2c_solution = [plan + "\n" + code for code in code_lst if code is not None]
             if code_lst:
                 code = code_lst.pop()
             if code is not None:
-                p2c_ans =  safe_execute_turbo(code)
+                p2c_ans = safe_execute_turbo(code)
             else:
                 p2c_ans = None
-
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
@@ -150,20 +148,22 @@ def indiv_inference(
 def rims_inference(
     prompt_f: str = "",
     gsm_jslf: str = "",
-    running_on_prev_result: bool=True, # if False, running on the whole, undone, dataset
+    running_on_prev_result: bool = True,  # if False, running on the whole, undone, dataset
     # llm options
     temperature: float = 0.0,
     n: int = 1,  # later for self-consistency
     backbone: str = "chatgpt",  # [chatgpt, gpt4] # later mixtral / llama
     seed: int = 777,
     start_idx: int = 0,
-    outdir:str="",
+    outdir: str = "",
     # dev option
     dbg: bool = False,
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
-    print("running on previous result --> will only query rims on conflicting rows that needs method selection")
+    print(
+        "running on previous result --> will only query rims on conflicting rows that needs method selection"
+    )
 
     if n > 1:
         raise NotImplementedError(
@@ -177,7 +177,7 @@ def rims_inference(
         )  # same dirname as prompt file stem
     else:
         outdir = Path(outdir)
- 
+
     def complete_row(row: dict):
         try:
             question = row["question"]
@@ -200,7 +200,7 @@ def rims_inference(
             )
 
             # do rims
-            if majority_ans is None:# problems are not done properly.
+            if majority_ans is None:  # problems are not done properly.
                 # here it had eval indiv_methods
                 (
                     eval_friendly_d,
@@ -235,7 +235,7 @@ def rims_inference(
             row["majority_ans"] = None
             row["prompt_file"] = str(prompt_f)
             row["inference_mode"] = "rims"
-        return row 
+        return row
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
@@ -251,36 +251,38 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
-    df = df.set_index('index', drop=False) 
+    df = df.set_index("index", drop=False)
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
-        nonconflict_mask = df.selection_or_rims.apply(lambda d: d['majority_vote'] if 'majority_vote' in d.keys() else False)
+        nonconflict_mask = df.selection_or_rims.apply(
+            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
+        )
         to_process_df = df[~nonconflict_mask]
-        to_process_df.majority_ans = None # clean up selection results from previous inference: to avoid contamination!
-        to_process_df = to_process_df.drop(columns=['selection_or_rims'])
+        to_process_df.majority_ans = None  # clean up selection results from previous inference: to avoid contamination!
+        to_process_df = to_process_df.drop(columns=["selection_or_rims"])
     else:
         to_process_df = df
-        if 'majority_ans' in df.columns:
-            to_process_df = df.drop(columns=['majority_ans'])
-    
+        if "majority_ans" in df.columns:
+            to_process_df = df.drop(columns=["majority_ans"])
 
-    records_cleansed = to_process_df.to_dict(orient='records') 
+    records_cleansed = to_process_df.to_dict(orient="records")
 
-    records_done = pqdm(records_cleansed, complete_row, n_jobs=8) 
-    
+    records_done = pqdm(records_cleansed, complete_row, n_jobs=8)
+
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
-        df_done = pd.DataFrame(records_done)   
-        df_done = df_done.set_index('index', drop=False) # if pqdm messed up the order, this will fix it.
+        df_done = pd.DataFrame(records_done)
+        df_done = df_done.set_index(
+            "index", drop=False
+        )  # if pqdm messed up the order, this will fix it.
         df.loc[df_done.index] = df_done
-        records_done = df.to_dict(orient='records') 
+        records_done = df.to_dict(orient="records")
 
     # for row in tqdm(records_cleansed):
     #     row = complete_row(row)
 
     with jsl.open(outpath, "w") as writer:
         writer.write_all(records_done)
-
 
     return
 
@@ -290,7 +292,7 @@ def baseline_inference(
     gsm_jslf: str = "",
     num_methods: int = 3,  # number of methods (3-> cot pal p2c / 2-> cot pal )
     start_idx: int = 0,
-    outdir:str="",
+    outdir: str = "",
     # llm options
     temperature: float = 0.0,
     n: int = 1,  # later for self-consistency
@@ -318,11 +320,14 @@ def baseline_inference(
         )  # same dirname as prompt file stem
     else:
         outdir = Path(outdir)
-    
+
     if not outdir.exists():
         outdir.mkdir(parents=True)
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
-    outpath = outdir / f"{backbone}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
+    outpath = (
+        outdir
+        / f"{backbone}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
+    )
 
     def complete_row(row: dict):
         question = row["question"]
@@ -339,7 +344,6 @@ def baseline_inference(
 
         row["ansmap"] = ansmap
         row["solmap"] = solmap
-
 
         # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
         majority_ans = get_concordant_answer(
@@ -384,4 +388,3 @@ def baseline_inference(
 
 if __name__ == "__main__":
     Fire()
-

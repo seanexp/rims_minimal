@@ -1,7 +1,7 @@
 You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
 - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem. 
+- Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
 - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
 Followings are the examples of correcting the wrong solutions with a `Method` based on diagnosis (`Mistakes`) and `Hint for a better Method choice`.
@@ -11,7 +11,7 @@ Followings are the examples of correcting the wrong solutions with a `Method` ba
 
 `Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     # Bella eats 6 apples a day
     apples_per_day_bella = 6
@@ -55,11 +55,11 @@ def solution():
 
     total_small_panda_bamboo_day = small_panda_bamboo_day * number_of_small_pandas
     total_big_panda_bamboo_day = big_panda_bamboo_day * number_of_big_pandas
-    
+
     total_bamboo_day = total_small_panda_bamboo_day + total_big_panda_bamboo_day
 
     total_bamboo_week = total_bamboo_day * 7
-    
+
     return total_bamboo_week
 
 `Answer 1`: 2100.0
@@ -69,28 +69,28 @@ def solution():
 
 `Question`: Bella eats 6 apples a day. If during the week she consumes a third of the apples Grace picks, how many apples will Grace have after 6 weeks?
 `Method`: Program-aided Language Modeling (pal)
-`Attempt 1`: 
+`Attempt 1`:
 def solution():
     apples_bella_eats_per_day = 6
     days_per_week = 7
     weeks = 6
-    
+
     # Calculate how many apples Bella eats in a week
     apples_bella_eats_per_week = apples_bella_eats_per_day * days_per_week
-    
+
     # Assuming this is a third of what Grace picks, find out the total Grace picks
     apples_grace_picks_per_week = apples_bella_eats_per_week * 3
-    
+
     # Calculate the total apples Grace picks in 6 weeks
     apples_grace_picks_total = apples_grace_picks_per_week * weeks
-    
-    # Since we are interested in how many apples Grace will have after Bella eats her share, 
+
+    # Since we are interested in how many apples Grace will have after Bella eats her share,
     # we subtract the number of apples Bella eats in 6 weeks
     apples_bella_eats_in_6_weeks = apples_bella_eats_per_week * weeks
-    
+
     # Calculate the remaining apples
     apples_grace_has_after = apples_grace_picks_total - apples_bella_eats_in_6_weeks
-    
+
     return apples_grace_has_after
 
 `Answer 1`: 504.0
