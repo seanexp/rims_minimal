@@ -1,5 +1,7 @@
 openai_key.txt
 
+**/*.pyc
+
 
 
 #  local only
