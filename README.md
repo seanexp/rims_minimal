@@ -42,11 +42,8 @@ python run_evaluation.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx
 
 
 ## todo
- - [x] fix bugs from revising project structure
  - add
-    - [x] erasing (w/o affecting the result of the prev) selection result of "conflict rows" to avoid contamination
-    - [x] evaluation minimal script into `experiment_example.sh`
-    - [ ] ocw symbolic answer evaluation/normalization code
+    - [ ] `NameError` when running baseline_inference on MATH dataset?
     - [ ] ocw, (math) symbolic including prompts
 
 ## algorithm
