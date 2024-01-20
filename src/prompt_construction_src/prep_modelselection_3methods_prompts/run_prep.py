@@ -4,7 +4,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath("../../"))
 
-import utils.llm_query_utils as llm_utils
+from utils.llm_query_utils import *
 
 if __name__ == "__main__":
     questions = []

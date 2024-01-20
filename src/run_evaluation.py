@@ -4,7 +4,7 @@ import jsonlines as jsl
 import pandas as pd
 from fire import Fire
 
-from math_util import is_equiv, normalize_final_answer
+from utils.math_util import is_equiv, normalize_final_answer
 
 
 def eval_gsm_svamp(df):

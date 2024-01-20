@@ -1,14 +1,14 @@
 import re
 from itertools import combinations
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import func_timeout
 import openai
 import regex
 import yaml
 
-from . import math_prompt
+from . import math_prompt, math_util
 
 # Get the absolute path of the current script
 THIS_PARENT = Path(__file__).parent.resolve()
@@ -317,7 +317,7 @@ def query_rims_inference(
     turn_based: bool = False,
     continue_writing_gpt_messages: list = None,  # list of messages to invoke continue writing down the rims prompt format.
     stop_tok=None,
-    for_eval_or_extend: bool = False,
+    # for_eval_or_extend: bool = False, # used for indiv eval but not used for now.
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
     if backbone == "chatgpt":
@@ -973,15 +973,16 @@ def _execute(code, code_return: str):
 
     try:
         locals_ = locals()
+        exec(code, locals_)  # code로 local_ 딕셔너리 업데이트
         solution = locals_.get("solution", None)
         funcname = get_func_name_from_string(code)  # for nontrivial function names
 
         if solution is not None:
-            return solution()
+            return solution()  # this will use locals()
         elif funcname:  # if any function name appears
             new_code = "import math\n" + code + f"\nresult = {funcname}()"
             loc = {}
-            exec(new_code, locals(), loc)
+            exec(new_code, locals(), loc)  # this will also use locals()
 
             result = loc["result"]
             return result
@@ -997,6 +998,10 @@ def _execute(code, code_return: str):
 
     except Exception as exp:
         print("Executing code error", exp)
+        print(f"{code=}")
+        print(f"{code_return=}")
+        print(f"{(solution is None)=}")
+        print(f"{funcname=}")
         return None
 
 
@@ -1028,7 +1033,9 @@ def safe_execute_turbo(code_string: str):
                 new_code_list = []
 
         if all_codes:
-            new_code = all_codes[-1]
+            new_code = "\n\n".join(
+                all_codes
+            )  # all_codes[-1] # if we parsed more than one function, we need to use them all.
 
             ans = func_timeout.func_timeout(
                 3,
@@ -1040,7 +1047,7 @@ def safe_execute_turbo(code_string: str):
             )
         else:
             ans = None
-    except (func_timeout.FunctionTimedOut, IndexError):
+    except (func_timeout.FunctionTimedOut, IndexError, NameError, SyntaxError):
         ans = None
 
     return ans
@@ -1069,7 +1076,11 @@ def extract_num_turbo(solution: str):
 #     return func(*args, **kwargs)
 
 
-def get_concordant_answer(answers: list, ensure_unanimity: bool = False):
+def get_concordant_answer(
+    answers: list,
+    ensure_unanimity: bool = False,
+    dataset_type: Literal["gsm", "svamp", "ocw", "math"] = "gsm",
+):
     """
     check if there is a pair of concordant answers.
     input: cot_ans, pal_ans, p2c_ans, [, ...]
@@ -1079,26 +1090,54 @@ def get_concordant_answer(answers: list, ensure_unanimity: bool = False):
     """
 
     answers_no_none = [a for a in answers if a is not None]
-    if ensure_unanimity:
-        if len(set(answers_no_none)) == 1:
-            return answers_no_none.pop()
-        else:
-            return None
+    if dataset_type in ["svamp", "gsm"]:
+        if ensure_unanimity:
+            if len(set(answers_no_none)) == 1:
+                return answers_no_none.pop()
+            else:
+                return None
 
-    if len(answers_no_none) == 0:
-        return None
-    elif len(answers_no_none) == 1:
-        return answers_no_none.pop()
-    elif len(answers_no_none) == 2:
-        if abs(answers_no_none[0] - answers_no_none[1]) < 1e-3:
-            return answers_no_none[0]
-        else:
+        if len(answers_no_none) == 0:
             return None
-    else:  # >=3
-        for a1, a2 in combinations(answers_no_none, 2):
-            if abs(a1 - a2) < 1e-3:
-                return a1
-        return None  # no concordant answers
+        elif len(answers_no_none) == 1:
+            return answers_no_none.pop()
+        elif len(answers_no_none) == 2:
+            if abs(answers_no_none[0] - answers_no_none[1]) < 1e-3:
+                return answers_no_none[0]
+            else:
+                return None
+        else:  # >=3
+            for a1, a2 in combinations(answers_no_none, 2):
+                if abs(a1 - a2) < 1e-3:
+                    return a1
+            return None  # no concordant answers
+    elif dataset_type in ["ocw", "math"]:
+        answers_normalized = [
+            math_util.normalize_final_answer(a)
+            for a in answers_no_none
+            if isinstance(a, str)
+        ]
+        if ensure_unanimity:
+            if len(set(answers_normalized)) == 1:
+                return answers_no_none.pop()
+            else:
+                return None
+        else:
+            if len(answers_normalized) == 0:
+                return None
+            elif len(answers_normalized) == 1:
+                return answers_no_none.pop()
+            elif len(answers_normalized) == 2:
+                if math_util.is_equiv(answers_normalized[0], answers_normalized[1]):
+                    return answers_no_none[0]
+                else:
+                    return None
+            else:  # len()==3
+                revert_normalized = dict(zip(answers_normalized, answers_no_none))
+                for a1, a2 in combinations(answers_normalized, 2):
+                    if math_util.is_equiv(a1, a2):
+                        return revert_normalized[a1]
+                return None  # no concordant answers
 
 
 def solution2blurb(method: str = "", solution: str = "", ans: Any = ""):

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 import jsonlines as jsl
 import pandas as pd
@@ -148,6 +148,9 @@ def indiv_inference(
 def rims_inference(
     prompt_f: str = "",
     gsm_jslf: str = "",
+    dataset_type: Literal[
+        "gsm", "svamp", "ocw", "math"
+    ] = "gsm",  # affects get_concordant_answer
     running_on_prev_result: bool = True,  # if False, running on the whole, undone, dataset
     # llm options
     temperature: float = 0.0,
@@ -161,6 +164,9 @@ def rims_inference(
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
+    assert (
+        dataset_type in gsm_jslf.lower()
+    ), f"sanity check: dataset_type will affect `get_concordant_answer()` \ncurrently running:\n{gsm_jslf=}\n{dataset_type=}"
     print(
         "running on previous result --> will only query rims on conflicting rows that needs method selection"
     )
@@ -196,7 +202,7 @@ def rims_inference(
 
             # is there majority answer? in ansmap?
             majority_ans = get_concordant_answer(
-                list(ansmap.values()), ensure_unanimity=False
+                list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
             )
 
             # do rims
@@ -242,7 +248,7 @@ def rims_inference(
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{'dbg_' if dbg else ''}{backbone}_rims_{dt_string}_startidx{start_idx}.jsonl"
+        / f"{'dbg_' if dbg else ''}{backbone}_{dt_string}_{Path(gsm_jslf).stem}_rims_startidx{start_idx}.jsonl"
     )
 
     # load_gsm_dataset to infer on
@@ -267,7 +273,12 @@ def rims_inference(
 
     records_cleansed = to_process_df.to_dict(orient="records")
 
-    records_done = pqdm(records_cleansed, complete_row, n_jobs=8)
+    if dbg:
+        for row in tqdm(records_cleansed):
+            row = complete_row(row)  # updates rows in records_cleansed
+        records_done = records_cleansed
+    else:
+        records_done = pqdm(records_cleansed, complete_row, n_jobs=8)
 
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
@@ -278,18 +289,24 @@ def rims_inference(
         df.loc[df_done.index] = df_done
         records_done = df.to_dict(orient="records")
 
-    # for row in tqdm(records_cleansed):
-    #     row = complete_row(row)
-
-    with jsl.open(outpath, "w") as writer:
-        writer.write_all(records_done)
-
+    with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
+        for row in records_done:
+            try:
+                writer.write(row)
+            except Exception as e:
+                writer_err.write(str(row) + "\n")
+                writer_err.write(str(e) + "\n")
+                print(e)
+                print(f"{outpath}.errors")
     return
 
 
 def baseline_inference(
     prompt_f: str = "math_prompt.py",  # only for recording promptfilename to the result. Actual prompt is read at `llm_query_utils.py`
     gsm_jslf: str = "",
+    dataset_type: Literal[
+        "gsm", "svamp", "ocw", "math"
+    ] = "gsm",  # affects get_concordant_answer
     num_methods: int = 3,  # number of methods (3-> cot pal p2c / 2-> cot pal )
     start_idx: int = 0,
     outdir: str = "",
@@ -302,6 +319,9 @@ def baseline_inference(
     dbg: bool = False,
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
+    assert (
+        dataset_type in gsm_jslf.lower()
+    ), f"sanity check: dataset_type will affect `get_concordant_answer()` \ncurrently running:\n{gsm_jslf=}\n{dataset_type=}"
 
     if n > 1:
         raise NotImplementedError(
@@ -310,8 +330,6 @@ def baseline_inference(
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
-    if dbg:
-        records = records[17:100]
 
     # output directory for the inference results:
     if not outdir:
@@ -326,7 +344,7 @@ def baseline_inference(
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{backbone}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
+        / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
     def complete_row(row: dict):
@@ -347,7 +365,7 @@ def baseline_inference(
 
         # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
         majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False
+            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
         )
 
         if majority_ans is None:  # do selection
@@ -373,15 +391,23 @@ def baseline_inference(
 
         return row
 
-    # for row in tqdm(records):
-    #     row = complete_row(row)
-
-    records = pqdm(records, complete_row, n_jobs=8)
+    if dbg:
+        for row in tqdm(records):
+            out = complete_row(row)
+            row = out
+    else:
+        records = pqdm(records, complete_row, n_jobs=8)
 
     print(f"writing to {outpath}")
-    with jsl.open(outpath, "w") as writer:
+    with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
         for row in records:
-            writer.write(row)
+            try:
+                writer.write(row)
+            except Exception as e:
+                writer_err.write(str(row) + "\n")
+                writer_err.write(str(e) + "\n")
+                print(e)
+                print(f"{outpath}.errors")
 
         return
 

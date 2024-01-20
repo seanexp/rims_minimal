@@ -8,4 +8,6 @@ openai_key.txt
 __pycache__/
 seonil_scripts/
 .vscode/
+launch.json
+
 # dbgoutdir/
