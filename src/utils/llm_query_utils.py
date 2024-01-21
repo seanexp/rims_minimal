@@ -1119,11 +1119,12 @@ def get_concordant_answer(
                 if abs(a1 - a2) < 1e-3:
                     return a1
             return None  # no concordant answers
-    elif dataset_type in ["ocw", "math"]:
+    elif dataset_type in ["math"]:
         answers_normalized = [
-            math_util.normalize_final_answer(a)
+            math_util.normalize_final_answer(
+                str(a)
+            )  # converting to str is critical here (is_equiv() expects str input)
             for a in answers_no_none
-            if isinstance(a, str)
         ]
         if ensure_unanimity:
             if len(set(answers_normalized)) == 1:
@@ -1146,6 +1147,8 @@ def get_concordant_answer(
                     if math_util.is_equiv(a1, a2):
                         return revert_normalized[a1]
                 return None  # no concordant answers
+    elif dataset_type in ["ocw"]:
+        raise NotImplementedError("use the code appears on appendix of the paper")
 
 
 def solution2blurb(method: str = "", solution: str = "", ans: Any = ""):

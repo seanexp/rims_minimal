@@ -89,32 +89,17 @@ def indiv_inference(
         cot_lst, _msgs = query_cot(
             question, temperature=temperature, n=n, backbone=backbone, seed=seed
         )
-        # except Exception as e:
-        #     print(e)
-        #     cot_lst, _msgs = [None], ['cot query failed']
         cot_sol = cot_lst.pop()  # solution: str
-        # try:
         cot_ans = extract_num_turbo(cot_sol)
-        # except Exception as e:
-        #     print(e)
-        #     cot_ans = None
         solmap["cot"] = cot_sol
         ansmap["cot"] = cot_ans
 
     if "pal" in missing_methods:
-        # try:
         pal_lst, __msgs = query_pal(
             question, temperature=temperature, n=n, backbone=backbone, seed=seed
         )
-        # except Exception as e:
-        #     print(e)
-        #     pal_lst, __msgs = [None], ['pal query failed']
         pal_sol = pal_lst.pop()
-        # try:
         pal_ans = safe_execute_turbo(pal_sol)
-        # except Exception as e:
-        #     print(e)
-        #     pal_ans = None
         solmap["pal"] = pal_sol
         ansmap["pal"] = pal_ans
 
@@ -257,6 +242,8 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
+    if "index" not in df.columns:
+        df["index"] = df.index
     df = df.set_index("index", drop=False)
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
