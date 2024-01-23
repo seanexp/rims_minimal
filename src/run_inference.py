@@ -1,10 +1,11 @@
 from datetime import datetime
+from functools import partial
 from typing import Any, Literal
 
 import jsonlines as jsl
 import pandas as pd
 from fire import Fire
-from pqdm.threads import pqdm
+from pqdm.processes import pqdm
 from tqdm import tqdm
 
 from utils.llm_query_utils import *
@@ -145,6 +146,74 @@ def indiv_inference(
     return ansmap, solmap  # updated ones
 
 
+def rims_complete_row(
+    row: dict,
+    temperature: float,
+    n: int,
+    backbone: str,
+    seed: int,
+    dataset_type: str,
+    prompt_f: str,
+):
+    try:
+        question = row["question"]
+
+        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        ansmap, solmap = indiv_inference(
+            row,
+            num_methods=3,
+            temperature=temperature,
+            n=n,
+            backbone=backbone,
+            seed=seed,
+        )
+        row["ansmap"] = ansmap
+        row["solmap"] = solmap
+
+        # is there majority answer? in ansmap?
+        majority_ans = get_concordant_answer(
+            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+        )
+
+        # do rims
+        if majority_ans is None:  # problems are not done properly.
+            # here it had eval indiv_methods
+            (
+                eval_friendly_d,
+                __,
+                raw_query_out,
+                query_msg,
+            ) = query_rims_inference(
+                question,
+                prompt_f,
+                backbone=backbone,
+                temperature=temperature,
+            )
+            # else:
+            #     eval_friendly_d, __, raw_query_out, query_msg = do_with_tenacity(query_rims_inference(question, prompt_f, backbone=backbone, temperature=temperature))
+
+            eval_friendly_d.update(
+                {"raw_query_out": raw_query_out, "query_msg": query_msg}
+            )
+            row[
+                "selection_or_rims"
+            ] = eval_friendly_d  # this contains all we need depicted above
+            row["majority_ans"] = eval_friendly_d["good_ans"]
+        else:
+            row["selection_or_rims"] = {"majority_vote": True}
+            row["majority_ans"] = majority_ans
+        row["prompt_file"] = str(prompt_f)
+        row["inference_mode"] = "rims"
+    except Exception as e:
+        print(e)
+        print(f"error occured at {row['index']}")
+        row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        row["majority_ans"] = None
+        row["prompt_file"] = str(prompt_f)
+        row["inference_mode"] = "rims"
+    return row
+
+
 def rims_inference(
     prompt_f: str = "",
     gsm_jslf: str = "",
@@ -184,65 +253,6 @@ def rims_inference(
     else:
         outdir = Path(outdir)
 
-    def complete_row(row: dict):
-        try:
-            question = row["question"]
-
-            # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-            ansmap, solmap = indiv_inference(
-                row,
-                num_methods=3,
-                temperature=temperature,
-                n=n,
-                backbone=backbone,
-                seed=seed,
-            )
-            row["ansmap"] = ansmap
-            row["solmap"] = solmap
-
-            # is there majority answer? in ansmap?
-            majority_ans = get_concordant_answer(
-                list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-            )
-
-            # do rims
-            if majority_ans is None:  # problems are not done properly.
-                # here it had eval indiv_methods
-                (
-                    eval_friendly_d,
-                    __,
-                    raw_query_out,
-                    query_msg,
-                ) = query_rims_inference(
-                    question,
-                    prompt_f,
-                    backbone=backbone,
-                    temperature=temperature,
-                )
-                # else:
-                #     eval_friendly_d, __, raw_query_out, query_msg = do_with_tenacity(query_rims_inference(question, prompt_f, backbone=backbone, temperature=temperature))
-
-                eval_friendly_d.update(
-                    {"raw_query_out": raw_query_out, "query_msg": query_msg}
-                )
-                row[
-                    "selection_or_rims"
-                ] = eval_friendly_d  # this contains all we need depicted above
-                row["majority_ans"] = eval_friendly_d["good_ans"]
-            else:
-                row["selection_or_rims"] = {"majority_vote": True}
-                row["majority_ans"] = majority_ans
-            row["prompt_file"] = str(prompt_f)
-            row["inference_mode"] = "rims"
-        except Exception as e:
-            print(e)
-            print(f"error occured at {row['index']}")
-            row["selection_or_rims"] = {"error": True, "exception": str(e)}
-            row["majority_ans"] = None
-            row["prompt_file"] = str(prompt_f)
-            row["inference_mode"] = "rims"
-        return row
-
     if not outdir.exists():
         outdir.mkdir(parents=True)
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
@@ -257,7 +267,8 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
-    df = df.set_index("index", drop=False)
+    if "index" in df.columns:
+        df = df.set_index("index", drop=False)
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
         nonconflict_mask = df.selection_or_rims.apply(
@@ -273,12 +284,22 @@ def rims_inference(
 
     records_cleansed = to_process_df.to_dict(orient="records")
 
+    _func = partial(
+        rims_complete_row,
+        temperature=temperature,
+        n=n,
+        backbone=backbone,
+        seed=seed,
+        dataset_type=dataset_type,
+        prompt_f=prompt_f,
+    )
+
     if dbg:
         for row in tqdm(records_cleansed):
-            row = complete_row(row)  # updates rows in records_cleansed
+            row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records_cleansed, complete_row, n_jobs=8)
+        records_done = pqdm(records_cleansed, _func, n_jobs=8)
 
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
@@ -299,6 +320,60 @@ def rims_inference(
                 print(e)
                 print(f"{outpath}.errors")
     return
+
+
+def baseline_complete_row(
+    row: dict,
+    temperature: float,
+    n: int,
+    backbone: Literal["chatgpt", "gpt4"],
+    seed: int,
+    dataset_type: str,
+    prompt_f: str,
+    num_methods: int,
+):
+    question = row["question"]
+
+    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+    ansmap, solmap = indiv_inference(
+        row,
+        num_methods=3,
+        temperature=temperature,
+        n=n,
+        backbone=backbone,
+        seed=seed,
+    )
+
+    row["ansmap"] = ansmap
+    row["solmap"] = solmap
+
+    # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+    majority_ans = get_concordant_answer(
+        list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+    )
+
+    if majority_ans is None:  # do selection
+        chosen_method, selection_str = query_selection(
+            question,
+            backbone=backbone,
+            cot_solution=solmap["cot"],
+            pal_solution=solmap["pal"],
+            p2c_plan_code_solution=solmap["p2c"],
+        )
+        row["selection_or_rims"] = {
+            "good_method": chosen_method,
+            "good_answer": ansmap[chosen_method],
+            "good_solution": solmap[chosen_method],
+            "selection_str": selection_str,
+        }
+        row["majority_ans"] = ansmap[chosen_method]
+    else:
+        row["selection_or_rims"] = {"majority_vote": True}
+        row["majority_ans"] = majority_ans
+    row["prompt_file"] = prompt_f
+    row["inference_mode"] = f"baseline {num_methods} methods"
+
+    return row
 
 
 def baseline_inference(
@@ -347,56 +422,23 @@ def baseline_inference(
         / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
-    def complete_row(row: dict):
-        question = row["question"]
-
-        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-        ansmap, solmap = indiv_inference(
-            row,
-            num_methods=3,
-            temperature=temperature,
-            n=n,
-            backbone=backbone,
-            seed=seed,
-        )
-
-        row["ansmap"] = ansmap
-        row["solmap"] = solmap
-
-        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-        majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-        )
-
-        if majority_ans is None:  # do selection
-            chosen_method, selection_str = query_selection(
-                question,
-                backbone=backbone,
-                cot_solution=solmap["cot"],
-                pal_solution=solmap["pal"],
-                p2c_plan_code_solution=solmap["p2c"],
-            )
-            row["selection_or_rims"] = {
-                "good_method": chosen_method,
-                "good_answer": ansmap[chosen_method],
-                "good_solution": solmap[chosen_method],
-                "selection_str": selection_str,
-            }
-            row["majority_ans"] = ansmap[chosen_method]
-        else:
-            row["selection_or_rims"] = {"majority_vote": True}
-            row["majority_ans"] = majority_ans
-        row["prompt_file"] = prompt_f
-        row["inference_mode"] = f"baseline {num_methods} methods"
-
-        return row
+    _func = partial(
+        baseline_complete_row,
+        temperature=temperature,
+        n=n,
+        backbone=backbone,
+        seed=seed,
+        dataset_type=dataset_type,
+        prompt_f=prompt_f,
+        num_methods=num_methods,
+    )
 
     if dbg:
         for row in tqdm(records):
-            out = complete_row(row)
+            out = _func(row)
             row = out
     else:
-        records = pqdm(records, complete_row, n_jobs=8)
+        records = pqdm(records, _func, n_jobs=8)
 
     print(f"writing to {outpath}")
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
