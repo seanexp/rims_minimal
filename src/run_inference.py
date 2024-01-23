@@ -46,6 +46,7 @@ row:
 
 def indiv_inference(
     row: dict = None,
+    re_execute_sln: bool = False,  # fix option
     num_methods: int = 3,
     temperature: float = 0.0,
     n: int = 1,
@@ -85,7 +86,6 @@ def indiv_inference(
         solmap = dict()
 
     if "cot" in missing_methods:
-        # try:
         cot_lst, _msgs = query_cot(
             question, temperature=temperature, n=n, backbone=backbone, seed=seed
         )
@@ -126,6 +126,16 @@ def indiv_inference(
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
+    if re_execute_sln:
+        for key, oldans in ansmap.items():
+            newans = oldans
+            if key == "pal":
+                newans = safe_execute_turbo(solmap[key])
+            elif key == "p2c":
+                newans = safe_execute_turbo(solmap[key][-1])
+            if newans != oldans:
+                print(f"{key}: answer changes to {oldans}->{newans}")
+                ansmap[key] = newans
 
     return ansmap, solmap  # updated ones
 
@@ -136,6 +146,8 @@ def rims_inference(
     dataset_type: Literal[
         "gsm", "svamp", "ocw", "math"
     ] = "gsm",  # affects get_concordant_answer
+    outdir: str = "",
+    # reuse_selection_if_exist:bool=False, # if True, will reuse selection results if it already exists
     running_on_prev_result: bool = True,  # if False, running on the whole, undone, dataset
     # llm options
     temperature: float = 0.0,
@@ -143,9 +155,10 @@ def rims_inference(
     backbone: str = "chatgpt",  # [chatgpt, gpt4] # later mixtral / llama
     seed: int = 777,
     start_idx: int = 0,
-    outdir: str = "",
     # dev option
     dbg: bool = False,
+    reuse_selection_if_exist: bool = False,  # if True, will reuse selection results if it already exists
+    re_execute_sln: bool = False,  # if True, re-execute solution of above
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
@@ -155,6 +168,10 @@ def rims_inference(
     print(
         "running on previous result --> will only query rims on conflicting rows that needs method selection"
     )
+    if re_execute_sln:
+        assert (
+            reuse_selection_if_exist
+        ), "if re_execute_sln, reuse_selection_if_exist must be True"
 
     if n > 1:
         raise NotImplementedError(
@@ -176,6 +193,7 @@ def rims_inference(
             # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
             ansmap, solmap = indiv_inference(
                 row,
+                re_execute_sln=re_execute_sln,
                 num_methods=3,
                 temperature=temperature,
                 n=n,
@@ -185,14 +203,15 @@ def rims_inference(
             row["ansmap"] = ansmap
             row["solmap"] = solmap
 
+            ansmap = emergency_fix_str_none(ansmap)
+            row = emergency_fix_str_none(row)
+
             # is there majority answer? in ansmap?
             majority_ans = get_concordant_answer(
                 list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
             )
 
-            # do rims
-            if majority_ans is None:  # problems are not done properly.
-                # here it had eval indiv_methods
+            def _update_w_query(row):  # call rims and update row
                 (
                     eval_friendly_d,
                     __,
@@ -204,8 +223,6 @@ def rims_inference(
                     backbone=backbone,
                     temperature=temperature,
                 )
-                # else:
-                #     eval_friendly_d, __, raw_query_out, query_msg = do_with_tenacity(query_rims_inference(question, prompt_f, backbone=backbone, temperature=temperature))
 
                 eval_friendly_d.update(
                     {"raw_query_out": raw_query_out, "query_msg": query_msg}
@@ -214,6 +231,23 @@ def rims_inference(
                     "selection_or_rims"
                 ] = eval_friendly_d  # this contains all we need depicted above
                 row["majority_ans"] = eval_friendly_d["good_ans"]
+                return row
+
+            # do rims
+            if majority_ans is None:  # problems are not done properly.
+                if reuse_selection_if_exist:  # fixing sj results
+                    if (
+                        "selection_or_rims" in row.keys()
+                        and "majority_vote" not in row["selection_or_rims"]
+                    ):
+                        row["selection_or_rims"] = emergency_fix_str_none(
+                            row["selection_or_rims"]
+                        )
+                        pass
+                    else:
+                        row = _update_w_query(row)
+                else:
+                    row = _update_w_query(row)
             else:
                 row["selection_or_rims"] = {"majority_vote": True}
                 row["majority_ans"] = majority_ans
@@ -304,11 +338,17 @@ def baseline_inference(
     seed: int = 777,
     # dev option
     dbg: bool = False,
+    reuse_selection_if_exist: bool = False,  # if True, will reuse selection results if it already exists
+    re_execute_sln: bool = False,  # if True, re-execute solution of above
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert (
         dataset_type in gsm_jslf.lower()
     ), f"sanity check: dataset_type will affect `get_concordant_answer()` \ncurrently running:\n{gsm_jslf=}\n{dataset_type=}"
+    if re_execute_sln:
+        assert (
+            reuse_selection_if_exist
+        ), "if re_execute_sln, reuse_selection_if_exist must be True"
 
     if n > 1:
         raise NotImplementedError(
@@ -340,12 +380,17 @@ def baseline_inference(
         # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
         ansmap, solmap = indiv_inference(
             row,
+            re_execute_sln=re_execute_sln,
             num_methods=3,
             temperature=temperature,
             n=n,
             backbone=backbone,
             seed=seed,
         )
+
+        # emergency fix: "None" that is wrongly recorded as a str type --> NoneType
+        ansmap = emergency_fix_str_none(ansmap)
+        row = emergency_fix_str_none(row)
 
         row["ansmap"] = ansmap
         row["solmap"] = solmap
@@ -355,7 +400,7 @@ def baseline_inference(
             list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
         )
 
-        if majority_ans is None:  # do selection
+        def _update_w_query(row):  # call selection and update row
             chosen_method, selection_str = query_selection(
                 question,
                 backbone=backbone,
@@ -370,6 +415,24 @@ def baseline_inference(
                 "selection_str": selection_str,
             }
             row["majority_ans"] = ansmap[chosen_method]
+            return row
+
+        if majority_ans is None:  # do selection
+            # do selection or reuse (--reuse_selection_if_exist)
+            if reuse_selection_if_exist:
+                if (
+                    "selection_or_rims" in row.keys()
+                    and "majority_vote" not in row["selection_or_rims"]
+                ):
+                    row["selection_or_rims"] = emergency_fix_str_none(
+                        row["selection_or_rims"]
+                    )
+                    pass
+                else:
+                    row = _update_w_query(row)
+            else:
+                row = _update_w_query(row)
+
         else:
             row["selection_or_rims"] = {"majority_vote": True}
             row["majority_ans"] = majority_ans
