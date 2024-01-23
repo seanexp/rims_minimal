@@ -1013,6 +1013,11 @@ def safe_execute_turbo(code_string: str):
         except Exception:
             return ans
 
+    def _convert_to_str_if_not_none_nor_float(ans):
+        if ans is not None and not isinstance(ans, float):
+            ans = str(ans)
+        return ans
+
     # === find code snippets between def solution(): and return ===
     try:
         code_list = code_string.strip().split("\n")
@@ -1022,7 +1027,8 @@ def safe_execute_turbo(code_string: str):
         code_return = "ans"
 
         for i in range(len(code_list)):
-            # if code_list[i].strip() == 'def solution():':
+            if code_list[i].startswith("import "):
+                all_codes.append(code_list[i])
             if re.search(r"def (\w+)\(", code_list[i]) and code_list[i].startswith(
                 "def "
             ):  # avoid including inner function definition
@@ -1052,7 +1058,7 @@ def safe_execute_turbo(code_string: str):
                 ),
             )
             ans = _convert_to_float_if_possible(ans)
-            ans = str(ans) if not isinstance(ans, float) and ans is not None else ans
+            ans = _convert_to_str_if_not_none_nor_float(ans)
         else:
             ans = None
     except (func_timeout.FunctionTimedOut, IndexError, NameError, SyntaxError):
@@ -1082,6 +1088,13 @@ def extract_num_turbo(solution: str):
 # @retry(wait=wait_chain(*[wait_fixed(3) for i in range(5)])) #defining backoff for retrying.
 # def do_with_tenacity(func, *args, **kwargs):
 #     return func(*args, **kwargs)
+
+
+def emergency_fix_str_none(d: dict) -> dict:
+    """
+    fix "None" to None in the dict
+    """
+    return {k: None if v == "None" else v for k, v in d.items()}
 
 
 def get_concordant_answer(
@@ -1119,7 +1132,7 @@ def get_concordant_answer(
                 if abs(a1 - a2) < 1e-3:
                     return a1
             return None  # no concordant answers
-    elif dataset_type in ["ocw", "math"]:
+    elif dataset_type in ["math"]:
         answers_normalized = [
             math_util.normalize_final_answer(str(a)) for a in answers_no_none
         ]
@@ -1143,6 +1156,8 @@ def get_concordant_answer(
                     if math_util.is_equiv(a1, a2):
                         return a1
                 return None  # no concordant answers
+    elif dataset_type in ["ocw"]:
+        raise NotImplementedError("use the code appears on appendix of the paper")
 
 
 def solution2blurb(method: str = "", solution: str = "", ans: Any = ""):
