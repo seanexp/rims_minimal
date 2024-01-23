@@ -1052,7 +1052,7 @@ def safe_execute_turbo(code_string: str):
                 ),
             )
             ans = _convert_to_float_if_possible(ans)
-            ans = str(ans) if not isinstance(ans, float) else ans
+            ans = str(ans) if not isinstance(ans, float) and ans is not None else ans
         else:
             ans = None
     except (func_timeout.FunctionTimedOut, IndexError, NameError, SyntaxError):
